@@ -1,383 +1,301 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roberto Fibonacci | Bóveda Estratégica</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
-    <!-- React & ReactDOM (Librerías base) -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel (Para traducir tu código React en el navegador) -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+import React, { useState, useMemo, useEffect } from 'react';
+import { Instagram, Facebook, Twitter, ArrowUpRight, ShieldCheck, Play, Images, Bot, Calculator, FileText, Clapperboard, Zap, ExternalLink, Archive } from 'lucide-react';
 
-    <style>
-        body { font-family: 'Lexend', sans-serif; background-color: #030303; }
-        /* Animaciones para el fondo estrellado y brillos */
+// =========================================================================
+// ALGORITMOS DE INTELIGENCIA DE DATOS (Fijo y Realista)
+// =========================================================================
+
+const getRealisticCounter = () => {
+  const hour = new Date().getHours();
+  let min = 0, max = 0;
+  if (hour >= 0 && hour < 7) { min = 0; max = 1; } 
+  else if (hour >= 7 && hour < 11) { min = 0; max = 2; }
+  else if (hour >= 11 && hour < 17) { min = 1; max = 4; }
+  else if (hour >= 17 && hour < 22) { min = 2; max = 7; }
+  else { min = 0; max = 2; }
+  return { baseNumber: Math.floor(Math.random() * (max - min + 1)) + min, minLimit: min, maxLimit: max };
+};
+
+const getHistoricalHash = (url) => {
+  if (!url) return 1000;
+  let hash = 0;
+  for (let i = 0; i < url.length; i++) {
+    hash = url.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash) % 2500 + 1200;
+};
+
+const FALLBACK_POSTS = [
+  { id: 1, platform: 'instagram', mediaType: 'video', mediaUrl: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=800&auto=format&fit=crop', rawContent: 'Estrategia de Prospección 2026\nNo vendas, diagnostica y prescribe. El 80% del tiempo se pierde en leads no calificados. {Estrategia}', date: '2026-04-21', size: 'large' },
+  { id: 2, platform: 'facebook', mediaType: 'link', rawContent: 'Chatbot Calificador TikTok\nPre-califica leads de alto valor: https://robertfibonacci.github.io/VenderEnTikTok/ {LeadMagnet} {Chatbot}', date: '2026-04-20' },
+  { id: 4, platform: 'instagram', mediaType: 'link', rawContent: 'Vende Más en Whatsapp\nDuplica tu tasa de cierre: https://robertfibonacci.github.io/Vende-mas-en-Whatsapp/ {LeadMagnet} {Chatbot}', date: '2026-04-18' },
+  { id: 6, platform: 'instagram', mediaType: 'link', rawContent: 'Calculadora de Fugas\nDiagnóstico financiero de alto nivel: https://robertfibonacci.github.io/Calculadora-Fugas/ {LeadMagnet} {Calculadora}', date: '2026-04-16' },
+  { id: 7, platform: 'twitter', mediaType: 'link', rawContent: 'Script High Ticket\nPlantilla copy-paste de $3k: https://github.com/robertfibonacci/script {LeadMagnet} {Plantilla}', date: '2026-04-15' },
+  { id: 8, platform: 'instagram', mediaType: 'link', rawContent: 'Masterclass $10k/mes\nReposicionamiento de la promesa central: https://github.com/robertfibonacci/masterclass {LeadMagnet} {Video}', date: '2026-04-14' },
+  { id: 9, platform: 'facebook', mediaType: 'link', rawContent: 'Manejo de Objeciones\nDerriba barreras sin presionar: https://github.com/robertfibonacci/objeciones {LeadMagnet} {Plantilla}', date: '2026-04-12' },
+  { id: 10, platform: 'twitter', mediaType: 'link', rawContent: 'Auditoría Perfil Magnético\nAutodiagnóstico de biografía: https://github.com/robertfibonacci/auditoria {LeadMagnet} {Calculadora}', date: '2026-04-10' }
+];
+
+// =========================================================================
+// COMPONENTE REUTILIZABLE: LeadMagnetInteractive
+// =========================================================================
+const LeadMagnetCard = ({ post, config, isVault = false, isBento = false }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [liveCount, setLiveCount] = useState(post.fakeCounter);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const [sessionIncremented, setSessionIncremented] = useState(false);
+  
+  const historicalBase = useMemo(() => getHistoricalHash(post.url), [post.url]);
+  const [localClicks, setLocalClicks] = useState(0);
+
+  const Icon = config.icon;
+
+  useEffect(() => {
+    const saved = localStorage.getItem(`lm_clicks_${post.id}`);
+    if (saved) setLocalClicks(parseInt(saved));
+  }, [post.id]);
+
+  useEffect(() => {
+    if (isVault) return;
+    const interval = setInterval(() => {
+      setLiveCount(prev => {
+        const change = Math.random() > 0.6 ? 1 : -1;
+        let newCount = prev + change;
+        const dynamicFloor = (hasInteracted || sessionIncremented) ? 1 : post.minLimit;
+        if (newCount < dynamicFloor) return dynamicFloor;
+        if (newCount > post.maxLimit) return post.maxLimit;
+        return newCount;
+      });
+    }, 15000 + Math.random() * 5000);
+    return () => clearInterval(interval);
+  }, [post.minLimit, post.maxLimit, hasInteracted, sessionIncremented, isVault]);
+
+  const toggleExpand = (e) => {
+    e.stopPropagation();
+    const expanding = !isExpanded;
+    setIsExpanded(expanding);
+
+    if (expanding && !sessionIncremented) {
+      setSessionIncremented(true);
+      if (!isVault) setLiveCount(prev => prev + 1);
+    }
+  };
+
+  const handleCtaClick = (e) => {
+    e.stopPropagation();
+    const newTotal = localClicks + 1;
+    setLocalClicks(newTotal);
+    localStorage.setItem(`lm_clicks_${post.id}`, newTotal);
+    setHasInteracted(true);
+    window.open(post.url, '_blank');
+  };
+
+  // Se añade soporte a los clics históricos que vienen de Notion si existen
+  const totalHistorical = historicalBase + localClicks + (post.notionClicks || 0);
+
+  // CORRECCIÓN EXACTA DE RESPONSIVIDAD: h-[160px] -> min-h-[160px] h-full
+  const baseClasses = isBento 
+    ? `relative group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]/80 backdrop-blur-sm flex flex-col cursor-pointer transition-all duration-700 ease-in-out hover:border-white/20 
+       ${post.size === 'large' ? (isExpanded ? 'row-span-4 md:col-span-2 md:row-span-4' : 'row-span-2 md:col-span-2 md:row-span-2') : 'row-span-2 md:col-span-2 md:row-span-1'} ${isExpanded ? 'h-auto' : ''}`
+    : `flex-shrink-0 w-[280px] md:w-[300px] group relative overflow-hidden rounded-[2rem] border transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 
+       ${isVault ? 'bg-[#050505]/50 border-white/5' : 'bg-[#0a0a0a]/80 border-white/10 hover:border-white/20'} ${isExpanded ? 'h-auto' : 'min-h-[160px] h-full'}`;
+
+  return (
+    <div onClick={toggleExpand} className={baseClasses}>
+      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+      <div className="p-6 h-full flex flex-col relative z-10 w-full">
+        
+        <div className="flex justify-between items-start mb-4">
+          <div className={`p-3 rounded-xl border transition-colors ${isVault ? 'bg-white/[0.02] border-white/5 text-white/20' : 'bg-black/50 border-white/5 text-slate-400 group-hover:text-white'}`}>
+            {post.isLM ? <Icon size={24} /> : (post.platform === 'instagram' ? <Instagram size={24} /> : (post.platform === 'twitter' || post.platform === 'x' ? <Twitter size={24} /> : <Facebook size={24} />))}
+          </div>
+          <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{post.date && post.date.includes('-') ? `${post.date.split('-')[1]}/${post.date.split('-')[2]}` : post.date}</span>
+        </div>
+
+        {isBento && post.mediaType !== 'text' && post.mediaUrl && (
+          <div className={`relative w-full rounded-xl overflow-hidden mb-4 border border-white/10 bg-[#1a1a1a] transition-all duration-700 ${isExpanded ? 'h-[250px] md:h-[400px]' : 'h-[100px] md:h-[160px]'}`}>
+            <img src={post.mediaUrl} className={`w-full h-full object-cover transition-all duration-700 ${isExpanded ? 'grayscale-0' : 'grayscale opacity-60'}`} alt="" />
+          </div>
+        )}
+
+        <h3 className={`font-bold transition-colors ${isVault ? 'text-white/50' : 'text-white group-hover:animate-text-glow'} ${isBento && post.size === 'large' ? 'text-2xl' : 'text-lg'}`}>
+          {post.pt}
+        </h3>
+
+        <div className={`transition-all duration-700 overflow-hidden ${isExpanded ? 'max-h-[800px] opacity-100 mt-4' : 'max-h-0 md:max-h-[45px] opacity-60'}`}>
+          <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-line mb-6">{post.pc}</p>
+          <button onClick={handleCtaClick} className={`w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all ${isVault ? 'bg-white/10 text-white' : 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-slate-200'}`}>
+            Acceder ahora <ExternalLink size={14} />
+          </button>
+        </div>
+
+        {/* mt-auto empuja siempre los contadores hacia abajo para que no se oculten en el celular */}
+        <div className="w-full h-[1px] bg-white/5 my-4 mt-auto" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {!isVault && <div className={`w-2 h-2 rounded-full animate-pulse-live ${liveCount === 0 ? 'bg-white/10' : 'bg-white/80'}`} />}
+            <span className="text-[10px] text-slate-500 font-medium tracking-tight italic">
+              {isVault ? `⭐ ${totalHistorical.toLocaleString()} usos totales` : (liveCount === 0 ? "Sistema Disponible" : `${liveCount} en evaluación`)}
+            </span>
+          </div>
+          <ArrowUpRight size={20} className={`text-white/20 transition-transform duration-500 ${isExpanded ? 'rotate-180 text-white' : ''}`} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const App = () => {
+  const stars = useMemo(() => Array.from({ length: 45 }).map((_, i) => ({
+    id: i, top: `${Math.random() * 100}%`, left: `${Math.random() * 100}%`,
+    animationDelay: `${Math.random() * 5}s`, animationDuration: `${Math.random() * 4 + 3}s`,
+    size: `${Math.random() * 1.5 + 1}px`, opacity: Math.random() * 0.4 + 0.1
+  })), []);
+
+  const [expandedPostId, setExpandedPostId] = useState(null);
+
+  // Inicializamos con los posts de respaldo para que nunca haya pantalla negra
+  const [posts, setPosts] = useState(FALLBACK_POSTS);
+
+  const categoryMap = { chatbot: { icon: Bot, subtitle: "Asistente IA" }, calculadora: { icon: Calculator, subtitle: "Herramienta Interactiva" }, plantilla: { icon: FileText, subtitle: "Recurso Descargable" }, video: { icon: Clapperboard, subtitle: "Entrenamiento VIP" }, general: { icon: Zap, subtitle: "Recurso Estratégico" } };
+
+  // LA ÚNICA ADICIÓN REAL: Conexión segura a la Base de Datos
+  useEffect(() => {
+    fetch("https://hook.us2.make.com/8xkugymgxu15kgs9tnrchluhk88xp42r")
+      .then(res => {
+        if (!res.ok) throw new Error("Servidor no responde");
+        return res.json();
+      })
+      .then(data => {
+        if (data && data.length > 0) {
+          const notionPosts = data.map((item, index) => {
+            const props = item.properties;
+            const title = props["Nombre"]?.title[0]?.plain_text || "Sin Título";
+            const content = props["Contenido"]?.rich_text[0]?.plain_text || "";
+            const actionLink = props["Link de Acción"]?.url || "";
+            const platform = props["Plataforma"]?.select?.name?.toLowerCase() || "instagram";
+            const isLeadMagnet = props["¿Es Lead Magnet?"]?.checkbox || false;
+            const mediaUrl = props["URL Multimedia"]?.url || "";
+            
+            const catString = isLeadMagnet ? "{LeadMagnet} {General}" : "";
+            const rawContent = `${title}\n${content} ${catString}\nLink: ${actionLink}`;
+
+            return {
+              id: item.id || `notion-${index}`,
+              platform: platform,
+              mediaType: mediaUrl ? 'image' : 'text',
+              mediaUrl: mediaUrl,
+              rawContent: rawContent,
+              date: item.created_time ? item.created_time.split('T')[0] : '2026-04-22',
+              size: index === 0 ? 'large' : 'normal',
+              notionClicks: props["Clics Históricos"]?.number || 0
+            };
+          });
+          setPosts(notionPosts);
+        }
+      })
+      .catch(err => {
+        console.error("No se pudo contactar Notion. Manteniendo el código estático intacto.", err);
+      });
+  }, []);
+
+  const processed = useMemo(() => {
+    const urlRegex = /(https?:\/\/[^\s]+)/;
+    const catRegex = /{LeadMagnet}\s*{([a-zA-ZáéíóúÁÉÍÓÚñÑ]+)}/;
+    return posts.map(p => {
+      let pc = p.rawContent || ''; let pt = "", url = "", cat = "General";
+      const isLM = pc.includes('{LeadMagnet}');
+      const um = pc.match(urlRegex); if (um) { url = um[1]; pc = pc.replace(url, '').trim(); }
+      const lines = pc.split('\n'); if (lines.length > 1) { pt = lines[0].trim(); pc = lines.slice(1).join('\n').trim(); } else { pt = ""; pc = lines[0].trim(); }
+      const cm = pc.match(catRegex); if (cm) { cat = cm[1]; pc = pc.replace(cm[0], '').trim(); } else { pc = pc.replace('{LeadMagnet}', '').trim(); }
+      
+      pc = pc.replace('Link:', '').trim(); // Limpieza extra para el texto
+      
+      const rd = getRealisticCounter();
+      return { ...p, pt, pc, url, cat: cat.toLowerCase(), isLM, fakeCounter: rd.baseNumber, minLimit: rd.minLimit, maxLimit: rd.maxLimit };
+    });
+  }, [posts]);
+
+  const allLMs = processed.filter(p => p.isLM).sort((a, b) => new Date(b.date) - new Date(a.date));
+  const hubLMs = allLMs.slice(0, 5);
+  const vaultLMs = allLMs.slice(5);
+  const gridPosts = processed.filter(p => !p.isLM).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  return (
+    <div className="min-h-screen bg-[#030303] text-slate-200 p-4 md:p-10 relative overflow-hidden font-sans">
+      <style>{`
         @keyframes soft-twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 0.8; transform: scale(1.2); box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.3); } }
         .animate-star { animation: soft-twinkle ease-in-out infinite; }
         @keyframes text-glow-shimmer { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
         .animate-text-glow { background-size: 200% auto; animation: text-glow-shimmer 6s ease-in-out infinite; }
         @keyframes pulse-live { 0% { transform: scale(0.9); opacity: 0.4; } 50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.3); } 100% { transform: scale(0.9); opacity: 0.4; } }
         .animate-pulse-live { animation: pulse-live 2s infinite ease-in-out; }
-        /* Ocultar barra de scroll en carrusel */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
-</head>
-<body>
-    <div id="root"></div>
+      `}</style>
 
-    <!-- AQUÍ EMPIEZA TU CÓDIGO REACT -->
-    <script type="text/babel">
-        const { useState, useMemo, useEffect } = React;
+      <div className="fixed inset-0 pointer-events-none z-0">
+        {stars.map(s => <div key={s.id} className="absolute rounded-full bg-white animate-star" style={{ top: s.top, left: s.left, width: s.size, height: s.size, animationDelay: s.animationDelay, animationDuration: s.animationDuration, opacity: s.opacity }} />)}
+      </div>
 
-        // =========================================================================
-        // ÍCONOS (Integrados directamente para evitar errores en GitHub Pages)
-        // =========================================================================
-        const Instagram = ({size=24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
-        const Facebook = ({size=24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>;
-        const Twitter = ({size=24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>;
-        const ArrowUpRight = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>;
-        const ShieldCheck = ({size=24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>;
-        const Bot = ({size=24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>;
-        const Calculator = ({size=24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="14"></line><line x1="16" y1="10" x2="16" y2="10"></line><line x1="16" y1="18" x2="16" y2="18"></line><line x1="8" y1="14" x2="8" y2="14"></line><line x1="8" y1="10" x2="8" y2="10"></line><line x1="8" y1="18" x2="8" y2="18"></line></svg>;
-        const FileText = ({size=24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>;
-        const Clapperboard = ({size=24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.4-2.2 1.5-2.5l13.5-4c1.1-.3 2.2.4 2.5 1.5l.6 2.4Z"></path><path d="m2.6 12 17.3 5.2c1.1.3 1.7 1.4 1.4 2.5l-.5 1.5c-.3 1.1-1.4 1.7-2.5 1.4L1 17.4c-1.1-.3-1.7-1.4-1.4-2.5l.5-1.5c.3-1.1 1.4-1.7 2.5-1.4Z"></path><path d="m5 11 1.7-1.6"></path><path d="m9 10 1.7-1.6"></path><path d="m13 9 1.7-1.6"></path><path d="m17 8 1.7-1.6"></path></svg>;
-        const Zap = ({size=24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>;
-        const ExternalLink = ({size=24}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>;
-        const Archive = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>;
-        const Loader2 = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>;
+      <main className="max-w-6xl mx-auto relative z-10">
+        <header className="mb-16 mt-8 flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div>
+            <div className="flex items-center gap-2 text-white font-mono text-sm tracking-widest uppercase mb-4"><ShieldCheck size={16} /> Verified Strategy</div>
+            <h1 className="text-5xl md:text-7xl font-black text-white">ROBERTO <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-500 via-white to-slate-500 animate-text-glow">FIBONACCI</span></h1>
+          </div>
+          <div className="bg-white/[0.02] border border-white/10 backdrop-blur-md p-6 rounded-2xl md:max-w-xs shadow-2xl"><p className="text-sm text-slate-400">Estratega de Ventas especializado en modelos <span className="text-white font-medium">High Ticket</span>.</p></div>
+        </header>
 
-        // =========================================================================
-        // PUENTE DE DATOS: Make.com -> Notion
-        // =========================================================================
-        const BRIDGE_URL = "https://hook.us2.make.com/8xkugymgxu15kgs9tnrchluhk88xp42r";
+        {hubLMs.length > 0 && (
+          <section className="mb-20">
+            <h2 className="text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-6 px-1">Herramientas Interactivas VIP</h2>
+            <div className="flex gap-4 overflow-x-auto pb-8 pt-2 no-scrollbar px-1">
+              {hubLMs.map(lm => <LeadMagnetCard key={lm.id} post={lm} config={categoryMap[lm.cat] || categoryMap.general} />)}
+            </div>
+          </section>
+        )}
 
-        // =========================================================================
-        // ALGORITMOS DE INTELIGENCIA DE DATOS (Fijo y Realista)
-        // =========================================================================
-        const getRealisticCounter = () => {
-          const hour = new Date().getHours();
-          let min = 0, max = 0;
-          if (hour >= 0 && hour < 7) { min = 0; max = 1; } 
-          else if (hour >= 7 && hour < 11) { min = 0; max = 2; }
-          else if (hour >= 11 && hour < 17) { min = 1; max = 4; }
-          else if (hour >= 17 && hour < 22) { min = 2; max = 7; }
-          else { min = 0; max = 2; }
-          return { baseNumber: Math.floor(Math.random() * (max - min + 1)) + min, minLimit: min, maxLimit: max };
-        };
-
-        const getHistoricalHash = (url) => {
-          if (!url) return 1000;
-          let hash = 0;
-          for (let i = 0; i < url.length; i++) {
-            hash = url.charCodeAt(i) + ((hash << 5) - hash);
-          }
-          return Math.abs(hash) % 2500 + 1200;
-        };
-
-        // =========================================================================
-        // DATOS DE RESPALDO (Por si Make.com está cargando)
-        // =========================================================================
-        const FALLBACK_POSTS = [
-          { id: 'fb1', platform: 'instagram', mediaType: 'video', mediaUrl: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=800&auto=format&fit=crop', rawContent: 'Estrategia de Prospección 2026\nNo vendas, diagnostica y prescribe. El 80% del tiempo se pierde en leads no calificados. {Estrategia}', date: '2026-04-21', size: 'large' },
-          { id: 'fb2', platform: 'facebook', mediaType: 'link', rawContent: 'Chatbot Calificador TikTok\nPre-califica leads de alto valor: https://robertfibonacci.github.io/VenderEnTikTok/ {LeadMagnet} {Chatbot}', date: '2026-04-20' },
-          { id: 'fb4', platform: 'instagram', mediaType: 'link', rawContent: 'Vende Más en Whatsapp\nDuplica tu tasa de cierre: https://robertfibonacci.github.io/Vende-mas-en-Whatsapp/ {LeadMagnet} {Chatbot}', date: '2026-04-18' },
-          { id: 'fb6', platform: 'instagram', mediaType: 'link', rawContent: 'Calculadora de Fugas\nDiagnóstico financiero de alto nivel: https://robertfibonacci.github.io/Calculadora-Fugas/ {LeadMagnet} {Calculadora}', date: '2026-04-16' },
-          { id: 'fb7', platform: 'twitter', mediaType: 'link', rawContent: 'Script High Ticket\nPlantilla copy-paste de $3k: https://github.com/robertfibonacci/script {LeadMagnet} {Plantilla}', date: '2026-04-15' },
-        ];
-
-        // =========================================================================
-        // COMPONENTE: LeadMagnetCard (Inteligencia de Retención)
-        // =========================================================================
-        const LeadMagnetCard = ({ post, config, isVault = false, isBento = false }) => {
-          const [isExpanded, setIsExpanded] = useState(false);
-          const [liveCount, setLiveCount] = useState(post.fakeCounter);
-          const [hasInteracted, setHasInteracted] = useState(false);
-          const [sessionIncremented, setSessionIncremented] = useState(false);
-          
-          const historicalBase = useMemo(() => getHistoricalHash(post.url), [post.url]);
-          const [localClicks, setLocalClicks] = useState(0);
-
-          const Icon = config.icon;
-
-          useEffect(() => {
-            const saved = localStorage.getItem(`lm_clicks_${post.id}`);
-            if (saved) setLocalClicks(parseInt(saved));
-          }, [post.id]);
-
-          useEffect(() => {
-            if (isVault) return;
-            const interval = setInterval(() => {
-              setLiveCount(prev => {
-                const change = Math.random() > 0.6 ? 1 : -1;
-                let newCount = prev + change;
-                const dynamicFloor = (hasInteracted || sessionIncremented) ? 1 : post.minLimit;
-                if (newCount < dynamicFloor) return dynamicFloor;
-                if (newCount > post.maxLimit) return post.maxLimit;
-                return newCount;
-              });
-            }, 15000 + Math.random() * 5000);
-            return () => clearInterval(interval);
-          }, [post.minLimit, post.maxLimit, hasInteracted, sessionIncremented, isVault]);
-
-          const toggleExpand = (e) => {
-            e.stopPropagation();
-            const expanding = !isExpanded;
-            setIsExpanded(expanding);
-
-            if (expanding && !sessionIncremented) {
-              setSessionIncremented(true);
-              if (!isVault) setLiveCount(prev => prev + 1);
-            }
-          };
-
-          const handleCtaClick = (e) => {
-            e.stopPropagation();
-            const newTotal = localClicks + 1;
-            setLocalClicks(newTotal);
-            localStorage.setItem(`lm_clicks_${post.id}`, newTotal);
-            setHasInteracted(true);
-            window.open(post.url, '_blank');
-          };
-
-          const totalHistorical = historicalBase + localClicks + (post.notionClicks || 0);
-
-          const baseClasses = isBento 
-            ? `relative group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]/80 backdrop-blur-sm flex flex-col cursor-pointer transition-all duration-700 ease-in-out hover:border-white/20 
-               ${post.size === 'large' ? (isExpanded ? 'row-span-4 md:col-span-2 md:row-span-4' : 'row-span-2 md:col-span-2 md:row-span-2') : 'row-span-2 md:col-span-2 md:row-span-1'} ${isExpanded ? 'h-auto' : ''}`
-            : `flex-shrink-0 w-[280px] md:w-[300px] group relative overflow-hidden rounded-[2rem] border transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 
-               ${isVault ? 'bg-[#050505]/50 border-white/5' : 'bg-[#0a0a0a]/80 border-white/10 hover:border-white/20'} ${isExpanded ? 'h-auto' : 'h-[160px]'}`;
-
-          return (
-            <div onClick={toggleExpand} className={baseClasses}>
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {gridPosts.map(p => (
+            <div key={p.id} onClick={() => setExpandedPostId(expandedPostId === p.id ? null : p.id)} className={`relative group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]/80 backdrop-blur-sm cursor-pointer transition-all duration-700 ease-in-out hover:border-white/20 ${p.size === 'large' ? (expandedPostId === p.id ? 'row-span-4 md:col-span-2 md:row-span-4' : 'row-span-2 md:col-span-2 md:row-span-2') : (expandedPostId === p.id ? 'row-span-3 md:col-span-2 md:row-span-3' : 'row-span-1 md:col-span-1 md:row-span-1')}`}>
               <div className="p-6 h-full flex flex-col relative z-10 w-full">
-                
                 <div className="flex justify-between items-start mb-4">
-                  <div className={`p-3 rounded-xl border transition-colors ${isVault ? 'bg-white/[0.02] border-white/5 text-white/20' : 'bg-black/50 border-white/5 text-slate-400 group-hover:text-white'}`}>
-                    {post.isLM ? <Icon size={24} /> : (post.platform === 'instagram' ? <Instagram size={24} /> : (post.platform === 'twitter' || post.platform === 'x' ? <Twitter size={24} /> : <Facebook size={24} />))}
+                  <div className="p-3 bg-black/50 rounded-xl border border-white/5 text-slate-400 group-hover:text-white transition-colors">
+                    {p.platform === 'instagram' ? <Instagram size={24} /> : (p.platform === 'twitter' || p.platform === 'x' ? <Twitter size={24} /> : <Facebook size={24} />)}
                   </div>
-                  <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{post.date ? `${post.date.split('-')[1]}/${post.date.split('-')[2]}` : 'HOY'}</span>
+                  <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{p.date && p.date.includes('-') ? `${p.date.split('-')[1]}/${p.date.split('-')[2]}` : p.date}</span>
                 </div>
-
-                {isBento && post.mediaType !== 'text' && post.mediaUrl && (
-                  <div className={`relative w-full rounded-xl overflow-hidden mb-4 border border-white/10 bg-[#1a1a1a] transition-all duration-700 ${isExpanded ? 'h-[250px] md:h-[400px]' : 'h-[100px] md:h-[160px]'}`}>
-                    <img src={post.mediaUrl} className={`w-full h-full object-cover transition-all duration-700 ${isExpanded ? 'grayscale-0' : 'grayscale opacity-60'}`} alt="" />
-                  </div>
-                )}
-
-                <h3 className={`font-bold transition-colors ${isVault ? 'text-white/50' : 'text-white group-hover:animate-text-glow'} ${isBento && post.size === 'large' ? 'text-2xl' : 'text-lg'}`}>
-                  {post.pt}
-                </h3>
-
-                <div className={`transition-all duration-700 overflow-hidden ${isExpanded ? 'max-h-[800px] opacity-100 mt-4' : 'max-h-0 md:max-h-[45px] opacity-60'}`}>
-                  <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-line mb-6">{post.pc}</p>
-                  <button onClick={handleCtaClick} className={`w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all ${isVault ? 'bg-white/10 text-white' : 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-slate-200'}`}>
-                    Acceder ahora <ExternalLink size={14} />
-                  </button>
-                </div>
-
-                <div className="w-full h-[1px] bg-white/5 my-4 mt-auto" />
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    {!isVault && <div className={`w-2 h-2 rounded-full animate-pulse-live ${liveCount === 0 ? 'bg-white/10' : 'bg-white/80'}`} />}
-                    <span className="text-[10px] text-slate-500 font-medium tracking-tight italic">
-                      {isVault ? `⭐ ${totalHistorical.toLocaleString()} interacciones` : (liveCount === 0 ? "Sistema Disponible" : `${liveCount} en evaluación`)}
-                    </span>
-                  </div>
-                  <ArrowUpRight size={20} className={`text-white/20 transition-transform duration-500 ${isExpanded ? 'rotate-180 text-white' : ''}`} />
+                {p.mediaType !== 'text' && p.mediaUrl && <div className={`relative w-full rounded-xl overflow-hidden mb-4 border border-white/10 transition-all duration-700 ${expandedPostId === p.id ? 'h-[250px] md:h-[400px]' : 'h-[100px] md:h-[160px]'}`}><img src={p.mediaUrl} className="w-full h-full object-cover" alt="" /></div>}
+                <h3 className="font-bold text-white mb-2 leading-tight text-lg">{p.pt}</h3>
+                <div className={`overflow-hidden transition-all duration-700 ${expandedPostId === p.id ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-[45px] opacity-60'}`}><p className="text-slate-400 text-sm leading-relaxed">{p.pc}</p></div>
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                  <span className="text-[10px] text-slate-500 font-medium uppercase tracking-widest">{`{${p.platform.toUpperCase()}}`}</span>
+                  <ArrowUpRight size={20} className={`text-white/20 transition-transform ${expandedPostId === p.id ? 'rotate-180' : ''}`} />
                 </div>
               </div>
             </div>
-          );
-        };
+          ))}
+        </div>
 
-        // =========================================================================
-        // COMPONENTE PRINCIPAL: App
-        // =========================================================================
-        const App = () => {
-          const [posts, setPosts] = useState([]);
-          const [isLoading, setIsLoading] = useState(true);
-          const [expandedPostId, setExpandedPostId] = useState(null);
-
-          const stars = useMemo(() => Array.from({ length: 45 }).map((_, i) => ({
-            id: i, top: `${Math.random() * 100}%`, left: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 5}s`, animationDuration: `${Math.random() * 4 + 3}s`,
-            size: `${Math.random() * 1.5 + 1}px`, opacity: Math.random() * 0.4 + 0.1
-          })), []);
-
-          const categoryMap = { chatbot: { icon: Bot, subtitle: "Asistente IA" }, calculadora: { icon: Calculator, subtitle: "Herramienta Interactiva" }, plantilla: { icon: FileText, subtitle: "Recurso Descargable" }, video: { icon: Clapperboard, subtitle: "Entrenamiento VIP" }, general: { icon: Zap, subtitle: "Recurso Estratégico" } };
-
-          // CONEXIÓN CON MAKE.COM / NOTION
-          useEffect(() => {
-            const fetchData = async () => {
-              try {
-                const response = await fetch(BRIDGE_URL);
-                if (response.ok) {
-                  const data = await response.json();
-                  
-                  if (data && data.length > 0) {
-                    const notionPosts = data.map((item, index) => {
-                      const props = item.properties;
-                      const title = props["Nombre"]?.title[0]?.plain_text || "Sin Título";
-                      const content = props["Contenido"]?.rich_text[0]?.plain_text || "";
-                      const actionLink = props["Link de Acción"]?.url || "";
-                      const platform = props["Plataforma"]?.select?.name?.toLowerCase() || "instagram";
-                      const isLeadMagnet = props["¿Es Lead Magnet?"]?.checkbox || false;
-                      const clicsNotion = props["Clics Históricos"]?.number || 0;
-                      const mediaUrl = props["URL Multimedia"]?.url || null;
-                      
-                      const catString = isLeadMagnet ? "{LeadMagnet} {General}" : "";
-                      const rawContent = `${title}\n${content} ${catString}\nLink: ${actionLink}`;
-                      
-                      return {
-                        id: item.id || `notion-${index}`, platform: platform, mediaType: mediaUrl ? 'image' : 'text', mediaUrl: mediaUrl, rawContent: rawContent,
-                        date: item.created_time ? item.created_time.split('T')[0] : '2026-04-22', size: index === 0 ? 'large' : 'normal', notionClicks: clicsNotion
-                      };
-                    });
-                    setPosts(notionPosts);
-                  } else {
-                    setPosts(FALLBACK_POSTS);
-                  }
-                } else {
-                  setPosts(FALLBACK_POSTS);
-                }
-              } catch (error) {
-                console.error("Error conectando a la Bóveda:", error);
-                setPosts(FALLBACK_POSTS);
-              } finally {
-                setIsLoading(false);
-              }
-            };
-            fetchData();
-          }, []);
-
-          const processed = useMemo(() => {
-            const urlRegex = /(https?:\/\/[^\s]+)/;
-            const catRegex = /{LeadMagnet}\s*{([a-zA-ZáéíóúÁÉÍÓÚñÑ]+)}/;
-            
-            return posts.map(p => {
-              let pc = p.rawContent || ''; 
-              let pt = "", url = "", cat = "General";
-              
-              const isLM = pc.includes('{LeadMagnet}');
-              const um = pc.match(urlRegex); 
-              if (um) { url = um[1]; pc = pc.replace(url, '').trim(); }
-              
-              const lines = pc.split('\n'); 
-              if (lines.length > 1) { pt = lines[0].trim(); pc = lines.slice(1).join('\n').trim(); } 
-              else { pt = ""; pc = lines[0].trim(); }
-              
-              const cm = pc.match(catRegex); 
-              if (cm) { cat = cm[1]; pc = pc.replace(cm[0], '').trim(); } 
-              else { pc = pc.replace('{LeadMagnet}', '').trim(); }
-              
-              pc = pc.replace('Link:', '').trim();
-              
-              const rd = getRealisticCounter();
-              return { ...p, pt, pc, url, cat: cat.toLowerCase(), isLM, fakeCounter: rd.baseNumber, minLimit: rd.minLimit, maxLimit: rd.maxLimit };
-            });
-          }, [posts]);
-
-          const allLMs = processed.filter(p => p.isLM).sort((a, b) => new Date(b.date) - new Date(a.date));
-          const hubLMs = allLMs.slice(0, 5);
-          const vaultLMs = allLMs.slice(5);
-          const gridPosts = processed.filter(p => !p.isLM).sort((a, b) => new Date(b.date) - new Date(a.date));
-
-          return (
-            <div className="relative z-10 p-4 md:p-10">
-              <main className="max-w-6xl mx-auto">
-                <header className="mb-16 mt-8 flex flex-col md:flex-row md:items-end justify-between gap-8">
-                  <div>
-                    <div className="flex items-center gap-2 text-white font-mono text-sm tracking-widest uppercase mb-4">
-                      <ShieldCheck size={16} /> 
-                      {isLoading ? 'Sincronizando Bóveda...' : 'Verified Strategy'}
-                    </div>
-                    <h1 className="text-5xl md:text-7xl font-black text-white">ROBERTO <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-500 via-white to-slate-500 animate-text-glow">FIBONACCI</span></h1>
-                  </div>
-                  <div className="bg-white/[0.02] border border-white/10 backdrop-blur-md p-6 rounded-2xl md:max-w-xs shadow-2xl">
-                    <p className="text-sm text-slate-400">Estratega de Ventas especializado en modelos <span className="text-white font-medium">High Ticket</span>.</p>
-                  </div>
-                </header>
-
-                {isLoading ? (
-                  <div className="flex flex-col items-center justify-center py-32 text-slate-500">
-                    <Loader2 size={48} className="animate-spin mb-4 text-purple-500/50" />
-                    <p className="tracking-widest uppercase text-sm font-bold animate-pulse">Accediendo a la matriz de Notion...</p>
-                  </div>
-                ) : (
-                  <>
-                    {hubLMs.length > 0 && (
-                      <section className="mb-20">
-                        <h2 className="text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-6 px-1">Herramientas Interactivas VIP</h2>
-                        <div className="flex gap-4 overflow-x-auto pb-8 pt-2 no-scrollbar px-1">
-                          {hubLMs.map(lm => <LeadMagnetCard key={lm.id} post={lm} config={categoryMap[lm.cat] || categoryMap.general} />)}
-                        </div>
-                      </section>
-                    )}
-
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                      {gridPosts.map(p => (
-                        <div key={p.id} onClick={() => setExpandedPostId(expandedPostId === p.id ? null : p.id)} className={`relative group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]/80 backdrop-blur-sm cursor-pointer transition-all duration-700 ease-in-out hover:border-white/20 ${p.size === 'large' ? (expandedPostId === p.id ? 'row-span-4 md:col-span-2 md:row-span-4' : 'row-span-2 md:col-span-2 md:row-span-2') : (expandedPostId === p.id ? 'row-span-3 md:col-span-2 md:row-span-3' : 'row-span-1 md:col-span-1 md:row-span-1')}`}>
-                          <div className="p-6 h-full flex flex-col relative z-10 w-full">
-                            <div className="flex justify-between items-start mb-4">
-                              <div className="p-3 bg-black/50 rounded-xl border border-white/5 text-slate-400 group-hover:text-white transition-colors">
-                                {p.platform === 'instagram' ? <Instagram size={24} /> : (p.platform === 'twitter' || p.platform === 'x' ? <Twitter size={24} /> : <Facebook size={24} />)}
-                              </div>
-                              <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{p.date ? `${p.date.split('-')[1]}/${p.date.split('-')[2]}` : 'HOY'}</span>
-                            </div>
-                            
-                            {p.mediaType !== 'text' && p.mediaUrl && (
-                              <div className={`relative w-full rounded-xl overflow-hidden mb-4 border border-white/10 transition-all duration-700 ${expandedPostId === p.id ? 'h-[250px] md:h-[400px]' : 'h-[100px] md:h-[160px]'}`}>
-                                <img src={p.mediaUrl} className="w-full h-full object-cover" alt="" />
-                              </div>
-                            )}
-                            
-                            <h3 className="font-bold text-white mb-2 leading-tight text-lg">{p.pt}</h3>
-                            <div className={`overflow-hidden transition-all duration-700 ${expandedPostId === p.id ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-[45px] opacity-60'}`}>
-                              <p className="text-slate-400 text-sm leading-relaxed">{p.pc}</p>
-                            </div>
-                            
-                            <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
-                              <span className="text-[10px] text-slate-500 font-medium uppercase tracking-widest">{`{${p.platform.toUpperCase()}}`}</span>
-                              <ArrowUpRight size={20} className={`text-white/20 transition-transform ${expandedPostId === p.id ? 'rotate-180' : ''}`} />
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {vaultLMs.length > 0 && (
-                      <section className="mt-24 pt-20 border-t border-white/5">
-                        <div className="flex flex-col items-center mb-12">
-                          <Archive size={32} className="text-white/20 mb-4" />
-                          <h2 className="text-xl font-bold text-white/50 uppercase tracking-wide">Bóveda de Sistemas</h2>
-                          <p className="text-sm text-slate-500 mt-2 text-center max-w-md">Historial de herramientas desarrolladas para la comunidad.</p>
-                        </div>
-                        <div className="flex flex-wrap justify-center gap-6 pb-20">
-                          {vaultLMs.map(lm => <LeadMagnetCard key={lm.id} post={lm} config={categoryMap[lm.cat] || categoryMap.general} isVault={true} />)}
-                        </div>
-                      </section>
-                    )}
-                  </>
-                )}
-
-                <footer className="mt-20 py-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-600 text-[10px] font-bold uppercase tracking-widest">
-                  <p>© 2026 Roberto Fibonacci.</p>
-                  <div className="flex gap-8"><a href="#" className="hover:text-white transition-colors">Aviso de Privacidad</a><a href="#" className="hover:text-white transition-colors">Contacto</a></div>
-                </footer>
-              </main>
+        {vaultLMs.length > 0 && (
+          <section className="mt-24 pt-20 border-t border-white/5">
+            <div className="flex flex-col items-center mb-12">
+              <Archive size={32} className="text-white/20 mb-4" />
+              <h2 className="text-xl font-bold text-white/50 uppercase tracking-wide">Bóveda de Sistemas</h2>
+              <p className="text-sm text-slate-500 mt-2 text-center max-w-md">Historial de herramientas desarrolladas para la comunidad.</p>
             </div>
-          );
-        };
+            <div className="flex flex-wrap justify-center gap-6 pb-20">
+              {vaultLMs.map(lm => <LeadMagnetCard key={lm.id} post={lm} config={categoryMap[lm.cat] || categoryMap.general} isVault={true} />)}
+            </div>
+          </section>
+        )}
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html>
+        <footer className="mt-20 py-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-600 text-[10px] font-bold uppercase tracking-widest">
+          <p>© 2026 Roberto Fibonacci.</p>
+          <div className="flex gap-8"><a href="#" className="hover:text-white transition-colors">Aviso de Privacidad</a><a href="#" className="hover:text-white transition-colors">Contacto</a></div>
+        </footer>
+      </main>
+    </div>
+  );
+};
+
+export default App;
