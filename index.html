@@ -1,295 +1,660 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roberto Fibonacci | Bóveda Estratégica</title>
+    <title>Roberto Fibonacci | Sistemas de Venta Estratégicos</title>
     
-    <!-- Envoltura exacta de ayer -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Librería original de lucide-react -->
-    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        body { font-family: 'Lexend', sans-serif; background-color: #030303; }
-        @keyframes soft-twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 0.8; transform: scale(1.2); box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.3); } }
-        .animate-star { animation: soft-twinkle ease-in-out infinite; }
-        @keyframes text-glow-shimmer { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-        .animate-text-glow { background-size: 200% auto; animation: text-glow-shimmer 6s ease-in-out infinite; }
-        @keyframes pulse-live { 0% { transform: scale(0.9); opacity: 0.4; } 50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.3); } 100% { transform: scale(0.9); opacity: 0.4; } }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            overflow-x: hidden; 
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Canvas para las estrellas */
+        #star-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: #050505; 
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .fade-in {
+            animation: fadeIn 1.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Degradado Estático Agresivo del Nombre */
+        .name-static-gradient {
+            background: linear-gradient(to right, #ffffff 0%, #ffffff 15%, #000000 95%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Animaciones del Zig-Zag */
+        @keyframes pulse-border-white {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+        .pulse-white { animation: pulse-border-white 1.5s infinite; }
+
+        /* ---------------------------------------------------
+           ESTILOS PARA LAS TARJETAS VIP
+           --------------------------------------------------- */
+        @keyframes pulse-live { 
+            0% { transform: scale(0.9); opacity: 0.4; } 
+            50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.3); } 
+            100% { transform: scale(0.9); opacity: 0.4; } 
+        }
         .animate-pulse-live { animation: pulse-live 2s infinite ease-in-out; }
+        
+        /* Ocultar barra de scroll para el carrusel de tarjetas */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .lm-expandable {
+            transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s ease;
+        }
     </style>
 </head>
-<body>
-    <div id="root"></div>
+<body class="antialiased selection:bg-white selection:text-black">
 
-    <script type="text/babel">
-        const { useState, useMemo, useEffect } = React;
-        
-        // Destructuración de tus 15 íconos originales de ayer
-        const { 
-            Instagram, Facebook, Twitter, ArrowUpRight, ShieldCheck, 
-            Play, Images, Bot, Calculator, FileText, Clapperboard, 
-            Zap, ExternalLink, Archive, Loader2 
-        } = window.lucideReact;
+    <canvas id="star-canvas"></canvas>
 
-        // URL de tu base de datos
-        const BRIDGE_URL = "https://hook.us2.make.com/8xkugymgxu15kgs9tnrchluhk88xp42r";
-
-        // =========================================================================
-        // TUS ALGORITMOS ORIGINALES DE AYER
-        // =========================================================================
-        const getRealisticCounter = () => {
-          const hour = new Date().getHours();
-          let min = 0, max = 0;
-          if (hour >= 0 && hour < 7) { min = 0; max = 1; } 
-          else if (hour >= 7 && hour < 11) { min = 0; max = 2; }
-          else if (hour >= 11 && hour < 17) { min = 1; max = 4; }
-          else if (hour >= 17 && hour < 22) { min = 2; max = 7; }
-          else { min = 0; max = 2; }
-          return { baseNumber: Math.floor(Math.random() * (max - min + 1)) + min, minLimit: min, maxLimit: max };
-        };
-
-        const getHistoricalHash = (url) => {
-          if (!url) return 1000;
-          let hash = 0;
-          for (let i = 0; i < url.length; i++) {
-            hash = url.charCodeAt(i) + ((hash << 5) - hash);
-          }
-          return Math.abs(hash) % 2500 + 1200;
-        };
-
-        const FALLBACK_POSTS = [
-          { id: 1, platform: 'instagram', mediaType: 'video', mediaUrl: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=800&auto=format&fit=crop', rawContent: 'Estrategia de Prospección 2026\nNo vendas, diagnostica y prescribe. El 80% del tiempo se pierde en leads no calificados. {Estrategia}', date: '2026-04-21', size: 'large' },
-          { id: 2, platform: 'facebook', mediaType: 'link', rawContent: 'Chatbot Calificador TikTok\nPre-califica leads de alto valor: https://robertfibonacci.github.io/VenderEnTikTok/ {LeadMagnet} {Chatbot}', date: '2026-04-20' },
-          { id: 4, platform: 'instagram', mediaType: 'link', rawContent: 'Vende Más en Whatsapp\nDuplica tu tasa de cierre: https://robertfibonacci.github.io/Vende-mas-en-Whatsapp/ {LeadMagnet} {Chatbot}', date: '2026-04-18' },
-          { id: 6, platform: 'instagram', mediaType: 'link', rawContent: 'Calculadora de Fugas\nDiagnóstico financiero de alto nivel: https://robertfibonacci.github.io/Calculadora-Fugas/ {LeadMagnet} {Calculadora}', date: '2026-04-16' },
-          { id: 7, platform: 'twitter', mediaType: 'link', rawContent: 'Script High Ticket\nPlantilla copy-paste de $3k: https://github.com/robertfibonacci/script {LeadMagnet} {Plantilla}', date: '2026-04-15' },
-          { id: 8, platform: 'instagram', mediaType: 'link', rawContent: 'Masterclass $10k/mes\nReposicionamiento de la promesa central: https://github.com/robertfibonacci/masterclass {LeadMagnet} {Video}', date: '2026-04-14' },
-          { id: 9, platform: 'facebook', mediaType: 'link', rawContent: 'Manejo de Objeciones\nDerriba barreras sin presionar: https://github.com/robertfibonacci/objeciones {LeadMagnet} {Plantilla}', date: '2026-04-12' },
-          { id: 10, platform: 'twitter', mediaType: 'link', rawContent: 'Auditoría Perfil Magnético\nAutodiagnóstico de biografía: https://github.com/robertfibonacci/auditoria {LeadMagnet} {Calculadora}', date: '2026-04-10' }
-        ];
-
-        // =========================================================================
-        // TU COMPONENTE ORIGINAL: LeadMagnetCard
-        // =========================================================================
-        const LeadMagnetCard = ({ post, config, isVault = false, isBento = false }) => {
-          const [isExpanded, setIsExpanded] = useState(false);
-          const [liveCount, setLiveCount] = useState(post.fakeCounter);
-          const [hasInteracted, setHasInteracted] = useState(false);
-          const [sessionIncremented, setSessionIncremented] = useState(false);
-          
-          const historicalBase = useMemo(() => getHistoricalHash(post.url), [post.url]);
-          const [localClicks, setLocalClicks] = useState(0);
-
-          const Icon = config.icon;
-
-          useEffect(() => {
-            const saved = localStorage.getItem(`lm_clicks_${post.id}`);
-            if (saved) setLocalClicks(parseInt(saved));
-          }, [post.id]);
-
-          useEffect(() => {
-            if (isVault) return;
-            const interval = setInterval(() => {
-              setLiveCount(prev => {
-                const change = Math.random() > 0.6 ? 1 : -1;
-                let newCount = prev + change;
-                const dynamicFloor = (hasInteracted || sessionIncremented) ? 1 : post.minLimit;
-                if (newCount < dynamicFloor) return dynamicFloor;
-                if (newCount > post.maxLimit) return post.maxLimit;
-                return newCount;
-              });
-            }, 15000 + Math.random() * 5000);
-            return () => clearInterval(interval);
-          }, [post.minLimit, post.maxLimit, hasInteracted, sessionIncremented, isVault]);
-
-          const toggleExpand = (e) => {
-            e.stopPropagation();
-            const expanding = !isExpanded;
-            setIsExpanded(expanding);
-
-            if (expanding && !sessionIncremented) {
-              setSessionIncremented(true);
-              if (!isVault) setLiveCount(prev => prev + 1);
-            }
-          };
-
-          const handleCtaClick = (e) => {
-            e.stopPropagation();
-            const newTotal = localClicks + 1;
-            setLocalClicks(newTotal);
-            localStorage.setItem(`lm_clicks_${post.id}`, newTotal);
-            setHasInteracted(true);
-            window.open(post.url, '_blank');
-          };
-
-          const totalHistorical = historicalBase + localClicks + (post.notionClicks || 0);
-
-          // Tu corrección móvil: h-[160px] -> min-h-[160px] h-full
-          const baseClasses = isBento 
-            ? `relative group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]/80 backdrop-blur-sm flex flex-col cursor-pointer transition-all duration-700 ease-in-out hover:border-white/20 
-               ${post.size === 'large' ? (isExpanded ? 'row-span-4 md:col-span-2 md:row-span-4' : 'row-span-2 md:col-span-2 md:row-span-2') : 'row-span-2 md:col-span-2 md:row-span-1'} ${isExpanded ? 'h-auto' : ''}`
-            : `flex-shrink-0 w-[280px] md:w-[300px] group relative overflow-hidden rounded-[2rem] border transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 
-               ${isVault ? 'bg-[#050505]/50 border-white/5' : 'bg-[#0a0a0a]/80 border-white/10 hover:border-white/20'} ${isExpanded ? 'h-auto' : 'min-h-[160px] h-full'}`;
-
-          return (
-            <div onClick={toggleExpand} className={baseClasses}>
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-              <div className="p-6 h-full flex flex-col relative z-10 w-full">
-                <div className="flex justify-between items-start mb-4">
-                  <div className={`p-3 rounded-xl border transition-colors ${isVault ? 'bg-white/[0.02] border-white/5 text-white/20' : 'bg-black/50 border-white/5 text-slate-400 group-hover:text-white'}`}>
-                    {post.isLM ? <Icon size={24} /> : (post.platform === 'instagram' ? <Instagram size={24} /> : (post.platform === 'twitter' || post.platform === 'x' ? <Twitter size={24} /> : <Facebook size={24} />))}
-                  </div>
-                  <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{post.date}</span>
-                </div>
-
-                {isBento && post.mediaType !== 'text' && post.mediaUrl && (
-                  <div className={`relative w-full rounded-xl overflow-hidden mb-4 border border-white/10 bg-[#1a1a1a] transition-all duration-700 ${isExpanded ? 'h-[250px] md:h-[400px]' : 'h-[100px] md:h-[160px]'}`}>
-                    <img src={post.mediaUrl} className={`w-full h-full object-cover transition-all duration-700 ${isExpanded ? 'grayscale-0' : 'grayscale opacity-60'}`} alt="" />
-                  </div>
-                )}
-
-                <h3 className={`font-bold transition-colors ${isVault ? 'text-white/50' : 'text-white group-hover:animate-text-glow'} ${isBento && post.size === 'large' ? 'text-2xl' : 'text-lg'}`}>
-                  {post.pt}
-                </h3>
-
-                <div className={`transition-all duration-700 overflow-hidden ${isExpanded ? 'max-h-[800px] opacity-100 mt-4' : 'max-h-0 md:max-h-[45px] opacity-60'}`}>
-                  <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-line mb-6">{post.pc}</p>
-                  <button onClick={handleCtaClick} className={`w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all ${isVault ? 'bg-white/10 text-white' : 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-slate-200'}`}>
-                    Acceder ahora <ExternalLink size={14} />
-                  </button>
-                </div>
-
-                <div className="w-full h-[1px] bg-white/5 my-4 mt-auto" />
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    {!isVault && <div className={`w-2 h-2 rounded-full animate-pulse-live ${liveCount === 0 ? 'bg-white/10' : 'bg-white/80'}`} />}
-                    <span className="text-[10px] text-slate-500 font-medium tracking-tight italic">
-                      {isVault ? `⭐ ${totalHistorical.toLocaleString()} usos totales` : (liveCount === 0 ? "Sistema Disponible" : `${liveCount} en evaluación`)}
-                    </span>
-                  </div>
-                  <ArrowUpRight size={20} className={`text-white/20 transition-transform duration-500 ${isExpanded ? 'rotate-180 text-white' : ''}`} />
-                </div>
-              </div>
+    <nav class="fixed w-full z-50 top-0 border-b border-white/10 bg-black/30 backdrop-blur-md">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-xl font-bold tracking-widest uppercase font-sans text-gray-300 hover:text-white transition-colors">RF.</a>
+            <div class="hidden md:flex space-x-8 text-sm tracking-wide text-gray-400">
+                <a href="#sistema" class="hover:text-white transition-colors">El Sistema</a>
+                <a href="#recursos" class="hover:text-white transition-colors">Herramientas VIP</a>
+                <a href="#proyectos" class="hover:text-white transition-colors">Casos de Éxito</a>
+                <a href="#contacto" class="hover:text-white transition-colors">Contacto</a>
             </div>
-          );
-        };
+            <button class="md:hidden text-gray-400 hover:text-white">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </nav>
 
-        // =========================================================================
-        // TU APP ORIGINAL CON EL PUENTE A NOTION INCORPORADO
-        // =========================================================================
-        const App = () => {
-          const [posts, setPosts] = useState(FALLBACK_POSTS);
-          const [isLoading, setIsLoading] = useState(true);
+    <!-- Sección Hero -->
+    <section class="min-h-[80vh] flex items-center relative fade-in pt-32 pb-16">
+        <div class="max-w-6xl mx-auto px-6 w-full z-10">
+            <div class="max-w-4xl text-left">
+                
+                <!-- Insignia Verified Strategy arriba del nombre -->
+                <div class="inline-flex items-center gap-2 text-white/90 font-mono text-xs tracking-widest uppercase mb-4 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 shadow-lg">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i> VERIFIED STRATEGY
+                </div>
+                
+                <h2 class="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight name-static-gradient">
+                    Roberto Fibonacci
+                </h2>
+                
+                <!-- Texto de Estratega debajo del nombre -->
+                <div class="mb-8">
+                    <span class="bg-white/[0.03] border border-white/10 backdrop-blur-md px-5 py-2.5 rounded-xl text-sm md:text-base text-slate-400 inline-block shadow-lg">
+                        Estratega de Ventas especializado en modelos <span class="text-white font-semibold">High Ticket</span>.
+                    </span>
+                </div>
 
-          const stars = useMemo(() => Array.from({ length: 45 }).map((_, i) => ({
-            id: i, top: `${Math.random() * 100}%`, left: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 5}s`, animationDuration: `${Math.random() * 4 + 3}s`,
-            size: `${Math.random() * 1.5 + 1}px`, opacity: Math.random() * 0.4 + 0.1
-          })), []);
+                <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 tracking-tight leading-tight text-white">
+                    El mayor problema de los negocios hoy es operar sin un mapa: <span class="text-gray-400 font-medium">tu comunicación atrae a los clientes equivocados y la falta de un seguimiento estratégico deja morir tus mejores ventas.</span>
+                </h1>
+                <p class="text-base md:text-lg text-gray-400 max-w-3xl font-light leading-relaxed mb-6 border-l-2 border-white/20 pl-6">
+                    Nosotros te damos la estructura y construimos el ecosistema por ti. Alineamos tu mensaje comercial, te ofrecemos prospección orgánica en redes sociales, instalamos un filtro automático para precalificar a los interesados y diseñamos el contenido exacto que debes enviarle a tu prospecto para educarlo hasta el cierre. <strong class="text-white font-medium">Deja de improvisar y empieza a vender con un sistema.</strong>
+                </p>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce opacity-50">
+            <i data-lucide="chevron-down" class="w-6 h-6"></i>
+        </div>
+    </section>
 
-          const [expandedPostId, setExpandedPostId] = useState(null);
+    <!-- Mapa Estratégico Interactivo (Zig-Zag) -->
+    <section id="sistema" class="py-12 px-6 relative z-10">
+        <div class="max-w-5xl mx-auto glass-panel p-8 md:p-16 rounded-3xl relative overflow-hidden">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Tu Atajo de Ventas</h2>
+                <p class="text-gray-400 font-light max-w-2xl mx-auto">
+                    El mapa exacto de 5 pasos que construimos para convertir tu WhatsApp en una máquina de cierres. Toca el inicio para ver cómo fluye el ecosistema.
+                </p>
+            </div>
 
-          const categoryMap = { chatbot: { icon: Bot, subtitle: "Asistente IA" }, calculadora: { icon: Calculator, subtitle: "Herramienta Interactiva" }, plantilla: { icon: FileText, subtitle: "Recurso Descargable" }, video: { icon: Clapperboard, subtitle: "Entrenamiento VIP" }, general: { icon: Zap, subtitle: "Recurso Estratégico" } };
+            <div class="relative w-full h-[380px] md:h-[450px] max-w-3xl mx-auto mb-16">
+                <!-- Caminos Base -->
+                <div class="absolute top-[15%] left-[25%] w-[50%] border-t-[2px] border-dashed border-white/10 -translate-y-1/2 z-0"></div>
+                <div class="absolute top-[15%] left-[75%] h-[35%] border-l-[2px] border-dashed border-white/10 -translate-x-1/2 z-0"></div>
+                <div class="absolute top-[50%] left-[25%] w-[50%] border-t-[2px] border-dashed border-white/10 -translate-y-1/2 z-0"></div>
+                <div class="absolute top-[50%] left-[25%] h-[35%] border-l-[2px] border-dashed border-white/10 -translate-x-1/2 z-0"></div>
+                <div class="absolute top-[85%] left-[25%] w-[50%] border-t-[2px] border-dashed border-white/10 -translate-y-1/2 z-0"></div>
 
-          // CONEXIÓN A TU BASE DE DATOS (Lo único nuevo)
-          useEffect(() => {
-            fetch(BRIDGE_URL)
-              .then(res => res.json())
-              .then(data => {
-                if (data && data.length > 0) {
-                  const notionPosts = data.map((item, index) => {
-                    const props = item.properties;
-                    const title = props["Nombre"]?.title[0]?.plain_text || "Sin Título";
-                    const content = props["Contenido"]?.rich_text[0]?.plain_text || "";
-                    const actionLink = props["Link de Acción"]?.url || "";
-                    const platform = props["Plataforma"]?.select?.name?.toLowerCase() || "instagram";
-                    const isLeadMagnet = props["¿Es Lead Magnet?"]?.checkbox || false;
-                    const mediaUrl = props["URL Multimedia"]?.url || "";
-                    
-                    const catString = isLeadMagnet ? "{LeadMagnet} {General}" : "";
-                    const rawContent = `${title}\n${content} ${catString}\nLink: ${actionLink}`;
+                <!-- Líneas Animadas -->
+                <div id="line-1" class="absolute top-[15%] left-[25%] h-[2px] bg-white transition-all ease-linear w-0 -translate-y-1/2 z-0 shadow-[0_0_12px_#fff]"></div>
+                <div id="line-2" class="absolute top-[15%] left-[75%] w-[2px] bg-white transition-all ease-linear h-0 -translate-x-1/2 z-0 shadow-[0_0_12px_#fff]"></div>
+                <div id="line-3" class="absolute top-[50%] right-[25%] h-[2px] bg-white transition-all ease-linear w-0 -translate-y-1/2 z-0 shadow-[0_0_12px_#fff]"></div>
+                <div id="line-4" class="absolute top-[50%] left-[25%] w-[2px] bg-white transition-all ease-linear h-0 -translate-x-1/2 z-0 shadow-[0_0_12px_#fff]"></div>
+                <div id="line-5" class="absolute top-[85%] left-[25%] h-[2px] bg-white transition-all ease-linear w-0 -translate-y-1/2 z-0 shadow-[0_0_12px_#fff]"></div>
 
-                    return {
-                      id: item.id || `notion-${index}`,
-                      platform: platform,
-                      mediaType: mediaUrl ? 'image' : 'text',
-                      mediaUrl: mediaUrl,
-                      rawContent: rawContent,
-                      date: item.created_time ? item.created_time.split('T')[0] : 'Hoy',
-                      size: index === 0 ? 'large' : 'normal',
-                      notionClicks: props["Clics Históricos"]?.number || 0
-                    };
-                  });
-                  setPosts(notionPosts);
-                }
-              })
-              .catch(() => console.log("Usando datos locales..."))
-              .finally(() => setIsLoading(false));
-          }, []);
-
-          const processed = useMemo(() => {
-            const urlRegex = /(https?:\/\/[^\s]+)/;
-            const catRegex = /{LeadMagnet}\s*{([a-zA-ZáéíóúÁÉÍÓÚñÑ]+)}/;
-            return posts.map(p => {
-              let pc = p.rawContent || ''; let pt = "", url = "", cat = "General";
-              const isLM = pc.includes('{LeadMagnet}');
-              const um = pc.match(urlRegex); if (um) { url = um[1]; pc = pc.replace(url, '').trim(); }
-              const lines = pc.split('\n'); if (lines.length > 1) { pt = lines[0].trim(); pc = lines.slice(1).join('\n').trim(); } else { pt = ""; pc = lines[0].trim(); }
-              const cm = pc.match(catRegex); if (cm) { cat = cm[1]; pc = pc.replace(cm[0], '').trim(); } else { pc = pc.replace('{LeadMagnet}', '').trim(); }
-              
-              pc = pc.replace('Link:', '').trim();
-              
-              const rd = getRealisticCounter();
-              return { ...p, pt, pc, url, cat: cat.toLowerCase(), isLM, fakeCounter: rd.baseNumber, minLimit: rd.minLimit, maxLimit: rd.maxLimit };
-            });
-          }, [posts]);
-
-          const allLMs = processed.filter(p => p.isLM).sort((a, b) => new Date(b.date) - new Date(a.date));
-          const hubLMs = allLMs.slice(0, 5);
-          const vaultLMs = allLMs.slice(5);
-          const gridPosts = processed.filter(p => !p.isLM).sort((a, b) => new Date(b.date) - new Date(a.date));
-
-          return (
-            <div className="min-h-screen bg-[#030303] text-slate-200 p-4 md:p-10 relative overflow-hidden font-sans">
-              <div className="fixed inset-0 pointer-events-none z-0">
-                {stars.map(s => <div key={s.id} className="absolute rounded-full bg-white animate-star" style={{ top: s.top, left: s.left, width: s.size, height: s.size, animationDelay: s.animationDelay, animationDuration: s.animationDuration, opacity: s.opacity }} />)}
-              </div>
-
-              <main className="max-w-6xl mx-auto relative z-10">
-                <header className="mb-16 mt-8 flex flex-col md:flex-row md:items-end justify-between gap-8">
-                  <div>
-                    <div className="flex items-center gap-2 text-white font-mono text-sm tracking-widest uppercase mb-4"><ShieldCheck size={16} /> {isLoading ? 'Sincronizando...' : 'Verified Strategy'}</div>
-                    <h1 className="text-5xl md:text-7xl font-black text-white">ROBERTO <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-500 via-white to-slate-500 animate-text-glow">FIBONACCI</span></h1>
-                  </div>
-                  <div className="bg-white/[0.02] border border-white/10 backdrop-blur-md p-6 rounded-2xl md:max-w-xs shadow-2xl"><p className="text-sm text-slate-400">Estratega de Ventas especializado en modelos <span className="text-white font-medium">High Ticket</span>.</p></div>
-                </header>
-
-                {hubLMs.length > 0 && (
-                  <section className="mb-20">
-                    <h2 className="text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-6 px-1">Herramientas Interactivas VIP</h2>
-                    <div className="flex gap-4 overflow-x-auto pb-8 pt-2 no-scrollbar px-1">
-                      {hubLMs.map(lm => <LeadMagnetCard key={lm.id} post={lm} config={categoryMap[lm.cat] || categoryMap.general} />)}
+                <!-- NODOS -->
+                <div id="step-1" class="absolute top-[15%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-20 cursor-pointer" onclick="runProcess()">
+                    <div id="pop-start" class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white text-black px-3 py-1.5 rounded-full text-[10px] font-extrabold whitespace-nowrap animate-bounce shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                        👆 Iniciar sistema
+                        <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rotate-45"></div>
                     </div>
-                  </section>
-                )}
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Autoridad Visual<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rotate-45"></div></div>
+                    <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border-[2px] border-white text-black flex items-center justify-center mb-1.5 shadow-[0_0_15px_rgba(255,255,255,0.4)] pulse-white transition-all duration-300"><i data-lucide="user-check" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-white text-center leading-tight">1. Tu Perfil</span>
+                </div>
+                <div id="step-2" class="absolute top-[15%] left-[75%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Filtro Automático<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rotate-45"></div></div>
+                    <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full bg-black border border-white/20 text-gray-500 flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300"><i data-lucide="filter" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-gray-500 text-center leading-tight opacity-0 transition-opacity duration-300">2. Bienvenida</span>
+                </div>
+                <div id="step-3" class="absolute top-[50%] left-[75%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Sondeo del Dolor<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rotate-45"></div></div>
+                    <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full bg-black border border-white/20 text-gray-500 flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300"><i data-lucide="search" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-gray-500 text-center leading-tight opacity-0 transition-opacity duration-300">3. Sondeo</span>
+                </div>
+                <div id="step-4" class="absolute top-[50%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Construir Confianza<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rotate-45"></div></div>
+                    <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full bg-black border border-white/20 text-gray-500 flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300"><i data-lucide="shield-check" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-gray-500 text-center leading-tight opacity-0 transition-opacity duration-300">4. El Puente</span>
+                </div>
+                <div id="step-5" class="absolute top-[85%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Sin Rogar<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rotate-45"></div></div>
+                    <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full bg-black border border-white/20 text-gray-500 flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300"><i data-lucide="gift" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-gray-500 text-center leading-tight opacity-0 transition-opacity duration-300">5. Tu Oferta</span>
+                </div>
+                <div id="step-6" class="absolute top-[85%] left-[75%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white text-black px-3 py-1.5 rounded text-[11px] font-extrabold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-[0_0_20px_rgba(255,255,255,0.5)] z-20">¡Transacción! 🎉<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rotate-45"></div></div>
+                    <div class="icon-bg w-12 h-12 md:w-14 md:h-14 rounded-full bg-black border border-white/20 text-gray-500 flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300"><i data-lucide="check-circle" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                    <span class="step-text text-[12px] md:text-sm font-extrabold text-gray-500 text-center leading-tight opacity-0 transition-opacity duration-300">6. ¡Cierre!</span>
+                </div>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  {gridPosts.map(p => (
-                    <div key={p.id} onClick={() => setExpandedPostId(expandedPostId === p.id ? null : p.id)} className={`relative group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]/80 backdrop-blur-sm cursor-pointer transition-all duration-700 ease-in-out hover:border-white/20 ${p.size === 'large' ? (expandedPostId === p.id ? 'row-span-4 md:col-span-2 md:row-span-4' : 'row-span-2 md:col-span-2 md:row-span-2') : (expandedPostId === p.id ? 'row-span-3 md:col-span-2 md:row-span-3' : 'row-span-1 md:col-span-1 md:row-span-1')}`}>
-                      <div className="p-6 h-full flex flex-col relative z-10 w-full">
-                        <div className="flex justify-between items-start mb-4">
-                          <div className="p-3 bg-black/50 rounded-xl border border-white/5 text-slate-400 group-hover:text-white transition-colors">
-                            {p.platform === 'instagram' ? <Instagram size={24} /> : (p.platform === 'twitter' || p.platform === 'x' ? <Twitter size={24} /> : <Facebook size={24} />)}
-                          </div>
-                          <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{p.date}</span>
+            <!-- Botón debajo del zig-zag -->
+            <div class="flex justify-center mt-8 fade-in" style="animation-delay: 0.5s;">
+                 <a href="#contacto" class="px-8 py-4 bg-white text-black text-center font-semibold rounded-full hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                    Agendar Llamada Estratégica
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DE HERRAMIENTAS VIP -->
+    <section id="recursos" class="py-16 px-6 relative z-10 bg-black/40 border-t border-b border-white/5">
+        <div class="max-w-6xl mx-auto">
+            <div class="mb-10 text-left md:text-center px-2">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Herramientas Interactivas VIP</h2>
+                <p class="text-gray-400 font-light max-w-2xl md:mx-auto">Recursos y sistemas desarrollados para optimizar la captación de tu negocio. Toca cualquier tarjeta para expandir la información.</p>
+            </div>
+
+            <!-- Carrusel de Tarjetas items-start evita estiramiento -->
+            <div class="flex items-start gap-4 md:gap-6 overflow-x-auto pb-12 pt-4 no-scrollbar px-2 snap-x" id="lead-magnets-container">
+                
+                <!-- Tarjeta 1: Chatbot -->
+                <div class="lm-card snap-center flex-shrink-0 w-[280px] md:w-[320px] relative group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]/80 backdrop-blur-md transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 hover:border-white/20 flex flex-col">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                    <div class="p-6 h-full flex flex-col relative z-10 w-full flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-black/50 rounded-xl border border-white/5 text-slate-400 group-hover:text-white transition-colors">
+                                <i data-lucide="bot" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">04/20</span>
                         </div>
-                        {p.mediaType !== 'text' && p.mediaUrl && <d
+                        <h3 class="font-bold text-white text-lg transition-colors group-hover:text-gray-300">Chatbot Calificador TikTok</h3>
+                        
+                        <div class="lm-expandable max-h-0 opacity-0 overflow-hidden">
+                            <p class="text-slate-400 text-sm leading-relaxed mb-6 mt-4">Pre-califica leads de alto valor en automático antes de que lleguen a tu WhatsApp, ahorrando horas de tiempo.</p>
+                            <a href="https://robertfibonacci.github.io/VenderEnTikTok/" target="_blank" class="lm-cta w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-slate-200 transition-all">
+                                Acceder ahora <i data-lucide="external-link" class="w-3 h-3"></i>
+                            </a>
+                        </div>
+
+                        <div class="w-full h-[1px] bg-white/5 my-4 mt-auto"></div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full animate-pulse-live bg-white/80"></div>
+                                <span class="text-[10px] text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> en evaluación</span>
+                            </div>
+                            <i data-lucide="arrow-up-right" class="lm-arrow w-5 h-5 text-white/20 transition-transform duration-500"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2: Vende Más -->
+                <div class="lm-card snap-center flex-shrink-0 w-[280px] md:w-[320px] relative group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]/80 backdrop-blur-md transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 hover:border-white/20 flex flex-col">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                    <div class="p-6 h-full flex flex-col relative z-10 w-full flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-black/50 rounded-xl border border-white/5 text-slate-400 group-hover:text-white transition-colors">
+                                <i data-lucide="zap" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">04/18</span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg transition-colors group-hover:text-gray-300">Vende Más en Whatsapp</h3>
+                        
+                        <div class="lm-expandable max-h-0 opacity-0 overflow-hidden">
+                            <p class="text-slate-400 text-sm leading-relaxed mb-6 mt-4">Sistema probado para duplicar tu tasa de cierre en chats sin tener que parecer un vendedor desesperado.</p>
+                            <a href="https://robertfibonacci.github.io/Vende-mas-en-Whatsapp/" target="_blank" class="lm-cta w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-slate-200 transition-all">
+                                Acceder ahora <i data-lucide="external-link" class="w-3 h-3"></i>
+                            </a>
+                        </div>
+
+                        <div class="w-full h-[1px] bg-white/5 my-4 mt-auto"></div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full animate-pulse-live bg-white/80"></div>
+                                <span class="text-[10px] text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> en evaluación</span>
+                            </div>
+                            <i data-lucide="arrow-up-right" class="lm-arrow w-5 h-5 text-white/20 transition-transform duration-500"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 3: Calculadora -->
+                <div class="lm-card snap-center flex-shrink-0 w-[280px] md:w-[320px] relative group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]/80 backdrop-blur-md transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 hover:border-white/20 flex flex-col">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                    <div class="p-6 h-full flex flex-col relative z-10 w-full flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-black/50 rounded-xl border border-white/5 text-slate-400 group-hover:text-white transition-colors">
+                                <i data-lucide="calculator" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">04/16</span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg transition-colors group-hover:text-gray-300">Calculadora de Fugas</h3>
+                        
+                        <div class="lm-expandable max-h-0 opacity-0 overflow-hidden">
+                            <p class="text-slate-400 text-sm leading-relaxed mb-6 mt-4">Diagnóstico financiero interactivo de alto nivel para descubrir cuánto dinero pierdes al mes por falta de seguimiento.</p>
+                            <a href="https://robertfibonacci.github.io/Calculadora-Fugas/" target="_blank" class="lm-cta w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-slate-200 transition-all">
+                                Acceder ahora <i data-lucide="external-link" class="w-3 h-3"></i>
+                            </a>
+                        </div>
+
+                        <div class="w-full h-[1px] bg-white/5 my-4 mt-auto"></div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full animate-pulse-live bg-white/80"></div>
+                                <span class="text-[10px] text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> en evaluación</span>
+                            </div>
+                            <i data-lucide="arrow-up-right" class="lm-arrow w-5 h-5 text-white/20 transition-transform duration-500"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 4: Script High Ticket -->
+                <div class="lm-card snap-center flex-shrink-0 w-[280px] md:w-[320px] relative group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]/80 backdrop-blur-md transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 hover:border-white/20 flex flex-col">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                    <div class="p-6 h-full flex flex-col relative z-10 w-full flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-black/50 rounded-xl border border-white/5 text-slate-400 group-hover:text-white transition-colors">
+                                <i data-lucide="file-text" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">04/15</span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg transition-colors group-hover:text-gray-300">Script High Ticket</h3>
+                        
+                        <div class="lm-expandable max-h-0 opacity-0 overflow-hidden">
+                            <p class="text-slate-400 text-sm leading-relaxed mb-6 mt-4">Plantilla copy-paste de $3k. Estructura exacta de palabras para cerrar servicios de alto valor por mensaje.</p>
+                            <a href="#" target="_blank" class="lm-cta w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-slate-200 transition-all">
+                                Acceder ahora <i data-lucide="external-link" class="w-3 h-3"></i>
+                            </a>
+                        </div>
+
+                        <div class="w-full h-[1px] bg-white/5 my-4 mt-auto"></div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full animate-pulse-live bg-white/80"></div>
+                                <span class="text-[10px] text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> en evaluación</span>
+                            </div>
+                            <i data-lucide="arrow-up-right" class="lm-arrow w-5 h-5 text-white/20 transition-transform duration-500"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 5: Masterclass -->
+                <div class="lm-card snap-center flex-shrink-0 w-[280px] md:w-[320px] relative group overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a]/80 backdrop-blur-md transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 hover:border-white/20 flex flex-col">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                    <div class="p-6 h-full flex flex-col relative z-10 w-full flex-grow">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-black/50 rounded-xl border border-white/5 text-slate-400 group-hover:text-white transition-colors">
+                                <i data-lucide="clapperboard" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">04/14</span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg transition-colors group-hover:text-gray-300">Masterclass $10k/mes</h3>
+                        
+                        <div class="lm-expandable max-h-0 opacity-0 overflow-hidden">
+                            <p class="text-slate-400 text-sm leading-relaxed mb-6 mt-4">Entrenamiento VIP en video: Reposicionamiento de tu promesa central para atraer a tu cliente ideal que sí paga.</p>
+                            <a href="#" target="_blank" class="lm-cta w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-slate-200 transition-all">
+                                Acceder ahora <i data-lucide="external-link" class="w-3 h-3"></i>
+                            </a>
+                        </div>
+
+                        <div class="w-full h-[1px] bg-white/5 my-4 mt-auto"></div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full animate-pulse-live bg-white/80"></div>
+                                <span class="text-[10px] text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> en evaluación</span>
+                            </div>
+                            <i data-lucide="arrow-up-right" class="lm-arrow w-5 h-5 text-white/20 transition-transform duration-500"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Casos de Éxito -->
+    <section id="proyectos" class="py-24 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-16 text-center">Casos de Éxito</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Caso 1 -->
+                <div class="glass-panel rounded-2xl overflow-hidden group">
+                    <div class="h-48 bg-gray-800 relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                        <div class="absolute inset-0 flex items-center justify-center text-gray-600">
+                            <i data-lucide="building-2" class="w-12 h-12"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Agencia de Marketing</h3>
+                        <p class="text-gray-400 text-sm mb-4 leading-relaxed">Pasaron de 2 a 10 cierres mensuales automatizando su proceso de agendamiento y filtrando clientes sin presupuesto inicial.</p>
+                    </div>
+                </div>
+
+                <!-- Caso 2 -->
+                <div class="glass-panel rounded-2xl overflow-hidden group">
+                    <div class="h-48 bg-gray-800 relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                        <div class="absolute inset-0 flex items-center justify-center text-gray-600">
+                            <i data-lucide="users" class="w-12 h-12"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Consultoría Legal</h3>
+                        <p class="text-gray-400 text-sm mb-4 leading-relaxed">Reducción del 75% en tiempo perdido en WhatsApp, implementando un embudo que pre-vende el servicio antes de la llamada.</p>
+                    </div>
+                </div>
+
+                <!-- Caso 3 -->
+                <div class="glass-panel rounded-2xl overflow-hidden group">
+                    <div class="h-48 bg-gray-800 relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                        <div class="absolute inset-0 flex items-center justify-center text-gray-600">
+                            <i data-lucide="laptop" class="w-12 h-12"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Coach Financiero</h3>
+                        <p class="text-gray-400 text-sm mb-4 leading-relaxed">Logró escalar sus mentorías de $500 a $2,000 USD al mejorar la percepción de valor de su oferta mediante automatización.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Contacto -->
+    <section id="contacto" class="py-24 px-6 relative z-10 bg-black/40 border-t border-white/5">
+        <div class="max-w-3xl mx-auto text-center glass-panel p-12 rounded-3xl">
+            <i data-lucide="calendar" class="w-12 h-12 mx-auto mb-6 text-white"></i>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">¿Listo para dejar de improvisar?</h2>
+            <p class="text-gray-400 font-light mb-10 max-w-lg mx-auto">
+                Si estás cansado de atraer clientes equivocados y perder ventas por falta de seguimiento, hablemos. Construyamos tu ecosistema.
+            </p>
+            <a href="mailto:hola@robertofibonacci.com" class="inline-flex items-center gap-2 px-8 py-4 bg-white text-black font-semibold rounded-full hover:scale-105 transition-transform duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                Agendar sesión estratégica
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+    </section>
+
+    <footer class="py-8 text-center text-sm text-gray-600 border-t border-white/5 relative z-10 bg-black/80">
+        <p>&copy; 2026 Roberto Fibonacci. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+
+        // 1. Canvas Estrellas
+        const canvas = document.getElementById('star-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let stars = [];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initStars();
+        }
+
+        function initStars() {
+            stars = [];
+            const numStars = Math.floor((width * height) / 4500); 
+            for (let i = 0; i < numStars; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 1.2 + 0.3, 
+                    opacity: Math.random(), 
+                    speed: Math.random() * 0.003 + 0.001, 
+                    direction: Math.random() > 0.5 ? 1 : -1 
+                });
+            }
+        }
+
+        function animateStars() {
+            ctx.clearRect(0, 0, width, height);
+            stars.forEach(star => {
+                star.opacity += star.speed * star.direction;
+                if (star.opacity >= 1) {
+                    star.opacity = 1;
+                    star.direction = -1;
+                } else if (star.opacity <= 0.1) {
+                    star.opacity = 0.1;
+                    star.direction = 1;
+                }
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(animateStars);
+        }
+
+        window.addEventListener('resize', resize);
+        resize(); 
+        animateStars(); 
+
+        // 2. Lógica Mapa Estratégico (Zig-Zag)
+        let isProcessRunning = false;
+        
+        function drawLine(id, dimension, targetValue, duration) {
+            const line = document.getElementById(id);
+            if(!line) return;
+            line.style.transitionDuration = duration + 'ms';
+            if(dimension === 'width') line.style.width = targetValue;
+            if(dimension === 'height') line.style.height = targetValue;
+        }
+
+        function activateStep(stepId, isFinal) {
+            const el = document.getElementById(stepId);
+            if(!el) return;
+            const iconBg = el.querySelector('.icon-bg');
+            const stepText = el.querySelector('.step-text');
+            const popUp = el.querySelector('.pop-up');
+
+            if (iconBg) {
+                iconBg.classList.remove('opacity-50', 'bg-black', 'border-white/20', 'text-gray-500');
+                iconBg.classList.add('opacity-100', 'bg-white', 'border-white', 'text-black', 'pulse-white');
+            }
+            if (stepText) { 
+                stepText.classList.remove('opacity-0', 'text-gray-500'); 
+                stepText.classList.add('opacity-100', 'text-white'); 
+            }
+            if (popUp) {
+                popUp.classList.remove('opacity-0', 'scale-50');
+                popUp.classList.add('opacity-100', 'scale-100', 'animate-bounce');
+                setTimeout(() => popUp.classList.remove('animate-bounce'), 2000);
+            }
+        }
+
+        function runProcess() {
+            if(isProcessRunning) return;
+            isProcessRunning = true;
+            
+            const popStart = document.getElementById('pop-start');
+            if(popStart) popStart.style.display = 'none';
+
+            const timeL1 = 1136, timeL2 = 795, timeL3 = 1136, timeL4 = 795, timeL5 = 1136; 
+
+            activateStep('step-1', false);
+            drawLine('line-1', 'width', '50%', timeL1);
+
+            setTimeout(() => { activateStep('step-2', false); drawLine('line-2', 'height', '35%', timeL2); }, timeL1);
+            setTimeout(() => { activateStep('step-3', false); drawLine('line-3', 'width', '50%', timeL3); }, timeL1 + timeL2);
+            setTimeout(() => { activateStep('step-4', false); drawLine('line-4', 'height', '35%', timeL4); }, timeL1 + timeL2 + timeL3);
+            setTimeout(() => { activateStep('step-5', false); drawLine('line-5', 'width', '50%', timeL5); }, timeL1 + timeL2 + timeL3 + timeL4);
+            setTimeout(() => { activateStep('step-6', true); }, timeL1 + timeL2 + timeL3 + timeL4 + timeL5);
+        }
+
+        // 3. LÓGICA DE LAS TARJETAS VIP (Horario B2B y Anti-Spam)
+        
+        // Algoritmo de horario para Dueños de Negocio
+        function getB2BScheduleLimits() {
+            const hour = new Date().getHours();
+            let min = 0, max = 0;
+            
+            if (hour >= 0 && hour < 6) { min = 0; max = 1; }        // Madrugada
+            else if (hour >= 6 && hour < 9) { min = 0; max = 2; }   // Mañana Temprana
+            else if (hour >= 9 && hour < 14) { min = 1; max = 5; }  // Prime Time Oficina
+            else if (hour >= 14 && hour < 18) { min = 0; max = 3; } // Tarde
+            else { min = 0; max = 2; }                              // Noche (18 a 24)
+            
+            return { minLimit: min, maxLimit: max };
+        }
+
+        const lmCards = document.querySelectorAll('.lm-card');
+        const { minLimit, maxLimit } = getB2BScheduleLimits();
+        
+        lmCards.forEach(card => {
+            const expandable = card.querySelector('.lm-expandable');
+            const arrow = card.querySelector('.lm-arrow');
+            const counterSpan = card.querySelector('.count-val');
+            const ctaBtn = card.querySelector('.lm-cta');
+            
+            // Inicializar cada tarjeta con un número aleatorio dentro de los límites del horario actual
+            let currentCount = Math.floor(Math.random() * (maxLimit - minLimit + 1)) + minLimit;
+            counterSpan.innerText = currentCount;
+            
+            // Candado Anti-Spam para sumar el clic
+            let sessionIncremented = false;
+
+            // Al hacer clic en la tarjeta: Efecto Acordeón y Suma Exacta
+            card.addEventListener('click', () => {
+                const isAlreadyExpanded = card.classList.contains('is-expanded');
+
+                // Paso 1: Cerrar TODAS las tarjetas primero
+                lmCards.forEach(otherCard => {
+                    otherCard.classList.remove('is-expanded');
+                    const otherExpandable = otherCard.querySelector('.lm-expandable');
+                    const otherArrow = otherCard.querySelector('.lm-arrow');
+                    
+                    otherExpandable.style.maxHeight = '0';
+                    otherExpandable.style.opacity = '0';
+                    otherArrow.style.transform = 'rotate(0deg)';
+                    otherArrow.style.color = 'rgba(255,255,255,0.2)';
+                });
+
+                // Paso 2: Abrir solo la seleccionada
+                if (!isAlreadyExpanded) {
+                    card.classList.add('is-expanded');
+                    expandable.style.maxHeight = '400px';
+                    expandable.style.opacity = '1';
+                    arrow.style.transform = 'rotate(180deg)';
+                    arrow.style.color = '#ffffff';
+                    
+                    // Sumar +1 EXACTO al hacer clic por primera vez, sin importar si el número era 0 o 3
+                    if(!sessionIncremented) {
+                        currentCount++;
+                        counterSpan.innerText = currentCount;
+                        sessionIncremented = true; // Candado cerrado para evitar spam
+                    }
+                }
+            });
+
+            // Evitar propagación al hacer clic en el botón de Acceder y asegurar el contador
+            ctaBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if(!sessionIncremented) {
+                    currentCount++;
+                    counterSpan.innerText = currentCount;
+                    sessionIncremented = true;
+                }
+            });
+
+            // Bucle Orgánico: Sube o baja cada 15 a 20 segundos
+            setInterval(() => {
+                const change = Math.random() > 0.6 ? 1 : -1;
+                let newCount = currentCount + change;
+                
+                // Si el usuario ya la abrió, el piso dinámico fuerza que nunca baje de 1
+                const dynamicFloor = sessionIncremented ? Math.max(1, minLimit) : minLimit;
+                
+                if(newCount < dynamicFloor) newCount = dynamicFloor;
+                if(newCount > maxLimit) newCount = maxLimit;
+                
+                currentCount = newCount;
+                counterSpan.innerText = currentCount;
+            }, 15000 + Math.random() * 5000); 
+        });
+
+    </script>
+</body>
+</html>
