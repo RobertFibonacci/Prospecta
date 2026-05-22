@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roberto Fibonacci | Sistemas de Venta Estratégicos</title>
+    <title>Roberto Fibonacci | Arquitectura de Autoridad y Ventas</title>
     
-    <!-- Tailwind CSS con soporte para Dark Mode manual -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
         }
         
-        // Script preventivo para evitar el "Flasheo" de colores al recargar
         if (localStorage.getItem('theme') === 'light') {
             document.documentElement.classList.remove('dark');
         } else {
@@ -20,199 +18,65 @@
         }
     </script>
     
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden; 
-            transition: background-color 0.5s ease, color 0.5s ease;
-        }
-        
-        /* Fondo base Día/Noche */
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
         html:not(.dark) body { background-color: #f9f9f9; color: #000000; }
         html.dark body { background-color: #000000; color: #ffffff; }
-        
-        h1, h2, h3 {
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        /* Canvas para las estrellas */
-        #star-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        /* Glassmorphism Adaptable Día/Noche */
-        .glass-panel {
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.5s ease;
-        }
-        html:not(.dark) .glass-panel {
-            background: rgba(0, 0, 0, 0.03);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        html.dark .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        html:not(.dark) .glass-panel:hover { border-color: rgba(0, 0, 0, 0.15); }
-        html.dark .glass-panel:hover { border-color: rgba(255, 255, 255, 0.2); }
-
-        .fade-in {
-            animation: fadeIn 1.5s ease-out forwards;
-            opacity: 0;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Degradado Estático para el nombre (Ajustado para no perder visibilidad en las últimas letras) */
-        .name-static-gradient {
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        html.dark .name-static-gradient {
-            /* De blanco sólido a gris medio para que "cci" no se pierda en el fondo negro */
-            background-image: linear-gradient(to right, #ffffff 0%, #ffffff 50%, #777777 100%);
-        }
-        html:not(.dark) .name-static-gradient {
-            /* De negro sólido a gris oscuro para el modo día */
-            background-image: linear-gradient(to right, #000000 0%, #000000 50%, #888888 100%);
-        }
-
-        /* Estilos del Zig Zag Adaptable */
-        @keyframes pulse-border-white {
-            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
-        }
-        @keyframes pulse-border-black {
-            0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5); }
-            70% { box-shadow: 0 0 0 15px rgba(0, 0, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
-        }
-        
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+        #star-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .glass-panel { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.5s ease; }
+        html:not(.dark) .glass-panel { background: rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.05); }
+        html.dark .glass-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .fade-in { animation: fadeIn 1.5s ease-out forwards; opacity: 0; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .name-static-gradient { -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent; }
+        html.dark .name-static-gradient { background-image: linear-gradient(to right, #ffffff 0%, #ffffff 50%, #777777 100%); }
+        html:not(.dark) .name-static-gradient { background-image: linear-gradient(to right, #000000 0%, #000000 50%, #888888 100%); }
+        @keyframes pulse-border-white { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5); } 70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
+        @keyframes pulse-border-black { 0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5); } 70% { box-shadow: 0 0 0 15px rgba(0, 0, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); } }
         .node-active { opacity: 1 !important; }
-        html:not(.dark) .node-active.icon-bg {
-            background-color: #000000 !important;
-            border-color: #000000 !important;
-            color: #ffffff !important;
-            animation: pulse-border-black 1.5s infinite;
-        }
-        html.dark .node-active.icon-bg {
-            background-color: #ffffff !important;
-            border-color: #ffffff !important;
-            color: #000000 !important;
-            animation: pulse-border-white 1.5s infinite;
-        }
-        
+        html:not(.dark) .node-active.icon-bg { background-color: #000000 !important; border-color: #000000 !important; color: #ffffff !important; animation: pulse-border-black 1.5s infinite; }
+        html.dark .node-active.icon-bg { background-color: #ffffff !important; border-color: #ffffff !important; color: #000000 !important; animation: pulse-border-white 1.5s infinite; }
         html:not(.dark) .node-active-text { opacity: 1 !important; color: #000000 !important; }
         html.dark .node-active-text { opacity: 1 !important; color: #ffffff !important; }
-
-        /* Estilos Tarjetas VIP */
-        @keyframes pulse-live { 
-            0% { transform: scale(0.9); opacity: 0.4; } 
-            50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.3); } 
-            100% { transform: scale(0.9); opacity: 0.4; } 
-        }
+        @keyframes pulse-live { 0% { transform: scale(0.9); opacity: 0.4; } 50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.3); } 100% { transform: scale(0.9); opacity: 0.4; } }
         .animate-pulse-live { animation: pulse-live 2s infinite ease-in-out; }
-        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .lm-expandable {
-            transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s ease;
-        }
-
-        /* ---------------------------------------------------
-           NUEVO: ANIMACIÓN DEL ESCUDO (Reemplaza el Halo del cajón)
-           --------------------------------------------------- */
-        @keyframes shield-glow-dark {
-            0% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); transform: scale(1); }
-            50% { filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1)); transform: scale(1.15); }
-            100% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); transform: scale(1); }
-        }
-        @keyframes shield-glow-light {
-            0% { filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); transform: scale(1); }
-            50% { filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.8)); transform: scale(1.15); }
-            100% { filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); transform: scale(1); }
-        }
+        .lm-expandable { transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s ease; }
+        @keyframes shield-glow-dark { 0% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); transform: scale(1); } 50% { filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1)); transform: scale(1.15); } 100% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); transform: scale(1); } }
+        @keyframes shield-glow-light { 0% { filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); transform: scale(1); } 50% { filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.8)); transform: scale(1.15); } 100% { filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); transform: scale(1); } }
         html.dark .animate-shield { animation: shield-glow-dark 2.5s infinite ease-in-out; }
         html:not(.dark) .animate-shield { animation: shield-glow-light 2.5s infinite ease-in-out; }
-
-        .profile-expandable {
-            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
-        }
-
-        /* Estrellas Internas para la Tarjeta de Perfil */
-        .card-stars-dark {
-            background-image: 
-                radial-gradient(1.5px 1.5px at 15% 25%, rgba(255,255,255,0.9), transparent),
-                radial-gradient(1px 1px at 85% 15%, rgba(255,255,255,0.6), transparent),
-                radial-gradient(2px 2px at 75% 75%, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 20% 85%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1.5px 1.5px at 50% 50%, rgba(255,255,255,0.7), transparent);
-            animation: pulse-card-stars 3s infinite alternate ease-in-out;
-        }
-        .card-stars-light {
-            background-image: 
-                radial-gradient(1.5px 1.5px at 15% 25%, rgba(0,0,0,0.8), transparent),
-                radial-gradient(1px 1px at 85% 15%, rgba(0,0,0,0.5), transparent),
-                radial-gradient(2px 2px at 75% 75%, rgba(0,0,0,0.7), transparent),
-                radial-gradient(1px 1px at 20% 85%, rgba(0,0,0,0.4), transparent),
-                radial-gradient(1.5px 1.5px at 50% 50%, rgba(0,0,0,0.6), transparent);
-            animation: pulse-card-stars 3s infinite alternate ease-in-out;
-        }
-        @keyframes pulse-card-stars {
-            0% { opacity: 0.2; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.05); }
-        }
+        .profile-expandable { transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease; }
+        .card-stars-dark { background-image: radial-gradient(1.5px 1.5px at 15% 25%, rgba(255,255,255,0.9), transparent), radial-gradient(1px 1px at 85% 15%, rgba(255,255,255,0.6), transparent), radial-gradient(2px 2px at 75% 75%, rgba(255,255,255,0.8), transparent), radial-gradient(1px 1px at 20% 85%, rgba(255,255,255,0.5), transparent), radial-gradient(1.5px 1.5px at 50% 50%, rgba(255,255,255,0.7), transparent); animation: pulse-card-stars 3s infinite alternate ease-in-out; }
+        .card-stars-light { background-image: radial-gradient(1.5px 1.5px at 15% 25%, rgba(0,0,0,0.8), transparent), radial-gradient(1px 1px at 85% 15%, rgba(0,0,0,0.5), transparent), radial-gradient(2px 2px at 75% 75%, rgba(0,0,0,0.7), transparent), radial-gradient(1px 1px at 20% 85%, rgba(0,0,0,0.4), transparent), radial-gradient(1.5px 1.5px at 50% 50%, rgba(0,0,0,0.6), transparent); animation: pulse-card-stars 3s infinite alternate ease-in-out; }
+        @keyframes pulse-card-stars { 0% { opacity: 0.2; transform: scale(1); } 100% { opacity: 1; transform: scale(1.05); } }
     </style>
 </head>
 <body class="antialiased selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
 
     <canvas id="star-canvas"></canvas>
 
-    <!-- ENCABEZADO STICKY COMPLETO -->
     <header class="sticky top-0 z-50 w-full flex flex-col transition-all duration-500 bg-white dark:bg-black">
-        
-        <!-- 1. Barra Principal -->
         <div class="w-full border-b border-black/10 dark:border-white/10 relative z-20 bg-white dark:bg-black transition-colors duration-500">
             <div class="max-w-6xl mx-auto px-6 h-[60px] flex justify-between items-center">
-                <!-- Logo RF. -->
                 <div class="w-16 md:w-[400px] flex justify-start items-center">
                     <a href="#" class="text-xl font-bold tracking-widest uppercase font-sans text-gray-800 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">RF.</a>
                 </div>
-                
-                <!-- Menú Hamburger / Toggle Noche-Día / Links -->
                 <div class="w-auto md:w-[400px] flex justify-end items-center gap-6 md:gap-8">
                     <div class="hidden md:flex space-x-8 text-sm tracking-wide text-gray-500 dark:text-gray-400">
-                        <a href="#sistema" class="hover:text-black dark:hover:text-white transition-colors">El Sistema</a>
-                        <a href="#recursos" class="hover:text-black dark:hover:text-white transition-colors">Herramientas VIP</a>
+                        <a href="#sistema" class="hover:text-black dark:hover:text-white transition-colors">Ecosistema</a>
+                        <a href="#recursos" class="hover:text-black dark:hover:text-white transition-colors">VIP</a>
                         <a href="#contacto" class="hover:text-black dark:hover:text-white transition-colors">Contacto</a>
                     </div>
-                    
-                    <!-- Botón Día / Noche -->
                     <button id="theme-toggle" class="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors outline-none" title="Cambiar Tema">
                         <i data-lucide="moon" id="icon-moon" class="w-5 h-5 hidden"></i>
                         <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden"></i>
                     </button>
-
                     <button class="md:hidden text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white">
                         <i data-lucide="menu"></i>
                     </button>
@@ -220,49 +84,33 @@
             </div>
         </div>
 
-        <!-- 2. LA PESTAÑA (Sin animación de Halo, animación movida al escudo) -->
         <div class="w-full relative z-10 -mt-[1px]">
             <button id="profile-btn" class="w-full bg-white dark:bg-black py-3 flex justify-center items-center gap-2 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer outline-none border-b border-black/20 dark:border-white/20">
-                <!-- Escudo con la nueva animación de brillo -->
                 <i data-lucide="shield-check" class="w-4 h-4 text-black dark:text-white animate-shield"></i> 
                 <span class="text-black dark:text-white/90 font-mono text-[10px] md:text-xs tracking-widest uppercase font-bold">
-                    VERIFIED STRATEGY
+                    AUTORIDAD VERIFICADA
                 </span>
                 <i data-lucide="chevron-down" id="profile-chevron" class="w-4 h-4 text-black dark:text-white transition-transform duration-300"></i>
             </button>
 
-            <!-- Panel de Contenido Expandible (Tarjeta Compacta y Monocromática) -->
             <div id="profile-panel" class="profile-expandable max-h-0 opacity-0 w-full flex justify-center bg-white dark:bg-black border-b border-black/10 dark:border-white/10 overflow-hidden shadow-2xl transition-colors duration-500 relative z-0">
-                
-                <!-- EL CORSÉ: Fija el tamaño de la tarjeta para que sea compacta -->
                 <div class="w-full max-w-[420px] px-4 py-6 md:py-8">
-                    
-                    <!-- La Tarjeta ID -->
                     <div class="bg-white dark:bg-black border border-black/10 dark:border-white/10 rounded-[1.5rem] shadow-xl p-5 transition-colors duration-500 relative overflow-hidden">
-                        
-                        <!-- Capa de Estrellas Internas -->
                         <div class="absolute inset-0 z-0 card-stars-light dark:hidden pointer-events-none"></div>
                         <div class="absolute inset-0 z-0 card-stars-dark hidden dark:block pointer-events-none"></div>
-                        
                         <div class="relative z-10">
-                            <!-- Header de la Tarjeta (Avatar Izquierda, Datos Derecha) -->
                             <div class="flex items-center gap-4 mb-4">
-                                <!-- Avatar -->
                                 <div class="w-[68px] h-[68px] rounded-full overflow-hidden bg-gray-200 dark:bg-black flex-shrink-0 border border-black/10 dark:border-white/10">
                                     <img src="perfil.png" alt="Roberto Fibonacci" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150/000000/ffffff?text=RF'">
                                 </div>
-                                
-                                <!-- Datos -->
                                 <div class="flex flex-col justify-center">
-                                    <!-- Degradado en el nombre dentro de la tarjeta -->
                                     <h2 class="text-xl font-bold tracking-tight leading-tight mb-1.5 transition-colors name-static-gradient">Roberto Fibonacci</h2>
-                                    
                                     <div class="flex items-center gap-3 text-[11px] text-gray-500 dark:text-gray-400 font-medium mb-1 transition-colors">
                                         <div class="flex items-center gap-1.5">
-                                            <i data-lucide="briefcase" class="w-3.5 h-3.5"></i> Founder de Prospecta
+                                            <i data-lucide="briefcase" class="w-3.5 h-3.5"></i> Arquitecto de Autoridad
                                         </div>
                                         <div class="flex items-center gap-1.5">
-                                            <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Querétaro
+                                            <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Digital
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400 font-medium transition-colors">
@@ -270,50 +118,32 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Subtítulo High Ticket -->
                             <div class="mb-5 bg-gray-50 dark:bg-white/5 border border-black/5 dark:border-white/5 px-3 py-2 rounded-xl transition-colors">
-                                <p class="text-[11px] text-gray-700 dark:text-gray-300 leading-relaxed">Estratega de Ventas especializado en modelos <span class="text-black dark:text-white font-bold">High Ticket</span>.</p>
+                                <p class="text-[11px] text-gray-700 dark:text-gray-300 leading-relaxed">Ayudo a expertos a dejar de ser <span class="text-black dark:text-white font-bold">commodities</span> y monetizar su autoridad.</p>
                             </div>
-                            
-                            <!-- Redes Sociales (Cápsulas 100% Monocromáticas) -->
                             <div class="grid grid-cols-2 gap-2.5">
-                                
-                                <!-- Instagram con Tooltip -->
-                                <div class="relative group">
-                                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-40 bg-black text-white dark:bg-white dark:text-black p-2.5 rounded-2xl shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50 origin-bottom scale-95 group-hover:scale-100">
-                                        <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold mb-0.5">¡Descubre!</p>
-                                        <p class="text-xs font-bold leading-tight">@RoberFibonacci</p>
-                                        <p class="text-xs text-blue-400 dark:text-blue-600 font-medium mt-0.5">👔 Negocios</p>
-                                        <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-[6px] border-transparent border-t-black dark:border-t-white"></div>
-                                    </div>
-                                    <a href="https://instagram.com/rober_fibonacci" target="_blank" class="flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
-                                        <i data-lucide="instagram" class="w-4 h-4 flex-shrink-0"></i>
-                                        <span class="text-[11px] font-medium truncate">@RoberFibonacci</span>
-                                    </a>
-                                </div>
-
-                                <!-- TikTok -->
-                                <a href="https://tiktok.com/@roberfobonacci" target="_blank" class="flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
+                                <!-- INSTAGRAM -->
+                                <a href="https://www.instagram.com/rober_fibonacci/" target="_blank" class="flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
+                                    <i data-lucide="instagram" class="w-4 h-4 flex-shrink-0"></i>
+                                    <span class="text-[11px] font-medium truncate">@rober_fibonacci</span>
+                                </a>
+                                <!-- TIKTOK -->
+                                <a href="https://tiktok.com/@roberfibonacci" target="_blank" class="flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 flex-shrink-0 fill-current">
                                         <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
                                     </svg>
-                                    <span class="text-[11px] font-medium truncate">@RoberFibonacci</span>
+                                    <span class="text-[11px] font-medium truncate">@roberfibonacci</span>
                                 </a>
-
-                                <!-- YouTube -->
-                                <a href="https://youtube.com/@ProspectaMx" target="_blank" class="flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
+                                <!-- YOUTUBE -->
+                                <a href="https://www.youtube.com/@ProspectaMx" target="_blank" class="flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
                                     <i data-lucide="youtube" class="w-4 h-4 flex-shrink-0"></i>
                                     <span class="text-[11px] font-medium truncate">@ProspectaMx</span>
                                 </a>
-
-                                <!-- Facebook -->
-                                <a href="https://facebook.com/RobertoFibonacci" target="_blank" class="flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
+                                <!-- FACEBOOK -->
+                                <a href="https://www.facebook.com/RobertoFibonacci" target="_blank" class="flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full text-black dark:text-white">
                                     <i data-lucide="facebook" class="w-4 h-4 flex-shrink-0"></i>
-                                    <span class="text-[11px] font-medium truncate">@RobertFibonacci</span>
+                                    <span class="text-[11px] font-medium truncate">@robertofibonacci</span>
                                 </a>
-
-                                <!-- WhatsApp (Dirigido a funnels) -->
                                 <a href="https://wa.me/524425480329" target="_blank" class="flex items-center justify-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 dark:bg-[#181818] border border-black/5 dark:border-white/5 hover:bg-gray-200 dark:hover:bg-[#222] transition-colors w-full sm:col-span-2 text-black dark:text-white">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 flex-shrink-0 fill-current">
                                         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
@@ -328,20 +158,19 @@
         </div>
     </header>
 
-    <!-- SECCIÓN HERO -->
     <section class="relative pt-10 md:pt-16 pb-16 z-0">
         <div class="max-w-6xl mx-auto px-6 w-full">
             <div class="max-w-4xl text-left">
-                <!-- Nombre con degradado estático ajustado (CCI visible) -->
                 <h2 class="text-4xl md:text-5xl lg:text-7xl font-extrabold mb-8 tracking-tight name-static-gradient mt-4">
                     Roberto Fibonacci
                 </h2>
                 
                 <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 tracking-tight leading-tight text-black dark:text-white transition-colors">
-                    El mayor problema de los negocios hoy es operar sin un mapa: <span class="text-gray-500 dark:text-gray-400 font-medium">tu comunicación atrae a los clientes equivocados y la falta de un seguimiento estratégico deja morir tus mejores ventas.</span>
+                    Tu conocimiento es valioso, pero tu comunicación actual te está convirtiendo en un <span class="italic underline text-gray-500">commodity</span>.
                 </h1>
                 <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-3xl font-light leading-relaxed mb-10 border-l-2 border-black/20 dark:border-white/20 pl-6 transition-colors">
-                    Nosotros te damos la estructura y construimos el ecosistema por ti. Alineamos tu mensaje comercial, te ofrecemos prospección orgánica en redes sociales, instalamos un filtro automático para precalificar a los interesados y diseñamos el contenido exacto que debes enviarle a tu prospecto para educarlo hasta el cierre. <strong class="text-black dark:text-white font-medium">Deja de improvisar y empieza a vender con un sistema.</strong>
+                    Publicas, atraes gente, pero en WhatsApp todo se desmorona. Improvisas respuestas, das precios sin filtrar y terminas lidiando con "turistas" que no valoran tu tiempo. <br><br>
+                    No necesitas vender más barato; necesitas <strong>Arquitectura de Autoridad</strong>. Construimos el sistema que filtra, califica y guía a tus prospectos directamente hacia una transacción de alto valor. <strong class="text-black dark:text-white font-medium block mt-4">Deja de ser una opción y conviértete en la única solución.</strong>
                 </p>
             </div>
         </div>
@@ -351,13 +180,12 @@
         </div>
     </section>
 
-    <!-- Mapa Estratégico Interactivo (Zig-Zag) -->
     <section id="sistema" class="py-12 px-6 relative z-10">
         <div class="max-w-5xl mx-auto glass-panel p-8 md:p-16 rounded-3xl relative overflow-hidden">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black dark:text-white transition-colors">Tu Atajo de Ventas</h2>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black dark:text-white transition-colors">Ecosistema de Conversión</h2>
                 <p class="text-gray-600 dark:text-gray-400 font-light max-w-2xl mx-auto transition-colors">
-                    El mapa exacto de 5 pasos que construimos para convertir tu WhatsApp en una máquina de cierres. Toca el inicio para ver cómo fluye el ecosistema.
+                    Tu mapa para dejar de improvisar. El proceso exacto de 5 etapas para convertir curiosos en clientes de alto valor sin rogar. Toca para ver el flujo.
                 </p>
             </div>
 
@@ -379,32 +207,32 @@
                         👆 Iniciar sistema
                         <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45 transition-colors"></div>
                     </div>
-                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Autoridad Visual<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Fachada de Autoridad<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
                     <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-1.5 transition-all duration-300 opacity-100 bg-black border-[2px] border-black text-white pulse-black dark:bg-white dark:border-white dark:text-black dark:pulse-white node-active"><i data-lucide="user-check" class="w-5 h-5 md:w-6 md:h-6"></i></div>
-                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight transition-colors text-black dark:text-white node-active-text">1. Tu Perfil</span>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight transition-colors text-black dark:text-white node-active-text">1. Posicionamiento</span>
                 </div>
                 <div id="step-2" class="absolute top-[15%] left-[75%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
-                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Filtro Automático<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Filtrado Automático<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
                     <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full border-[2px] flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300 bg-white border-black/20 text-gray-400 dark:bg-black dark:border-white/20 dark:text-gray-500"><i data-lucide="filter" class="w-5 h-5 md:w-6 md:h-6"></i></div>
-                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">2. Bienvenida</span>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">2. Triaje</span>
                 </div>
                 <div id="step-3" class="absolute top-[50%] left-[75%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
-                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Sondeo del Dolor<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Sondeo del Valor<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
                     <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full border-[2px] flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300 bg-white border-black/20 text-gray-400 dark:bg-black dark:border-white/20 dark:text-gray-500"><i data-lucide="search" class="w-5 h-5 md:w-6 md:h-6"></i></div>
                     <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">3. Sondeo</span>
                 </div>
                 <div id="step-4" class="absolute top-[50%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
-                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Construir Confianza<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Construcción de Confianza<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
                     <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full border-[2px] flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300 bg-white border-black/20 text-gray-400 dark:bg-black dark:border-white/20 dark:text-gray-500"><i data-lucide="shield-check" class="w-5 h-5 md:w-6 md:h-6"></i></div>
-                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">4. El Puente</span>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">4. Autoridad</span>
                 </div>
                 <div id="step-5" class="absolute top-[85%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
-                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Sin Rogar<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-md">Oferta Irresistible<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
                     <div class="icon-bg w-10 h-10 md:w-12 md:h-12 rounded-full border-[2px] flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300 bg-white border-black/20 text-gray-400 dark:bg-black dark:border-white/20 dark:text-gray-500"><i data-lucide="gift" class="w-5 h-5 md:w-6 md:h-6"></i></div>
-                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">5. Tu Oferta</span>
+                    <span class="step-text text-[10px] md:text-xs font-bold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">5. Conversión</span>
                 </div>
                 <div id="step-6" class="absolute top-[85%] left-[75%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-24 z-10">
-                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-3 py-1.5 rounded text-[11px] font-extrabold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-lg z-20">¡Transacción! 🎉<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
+                    <div class="pop-up absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white dark:bg-white dark:text-black px-3 py-1.5 rounded text-[11px] font-extrabold whitespace-nowrap opacity-0 transition-all duration-300 scale-50 shadow-lg z-20">¡Cliente de Valor! 🎉<div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div></div>
                     <div class="icon-bg w-12 h-12 md:w-14 md:h-14 rounded-full border-[2px] flex items-center justify-center mb-1.5 opacity-50 transition-all duration-300 bg-white border-black/20 text-gray-400 dark:bg-black dark:border-white/20 dark:text-gray-500"><i data-lucide="check-circle" class="w-6 h-6 md:w-8 md:h-8"></i></div>
                     <span class="step-text text-[12px] md:text-sm font-extrabold text-center leading-tight opacity-0 transition-opacity duration-300 text-gray-400 dark:text-gray-500">6. ¡Cierre!</span>
                 </div>
@@ -412,22 +240,20 @@
 
             <div class="flex justify-center mt-8 fade-in" style="animation-delay: 0.5s;">
                  <a href="#contacto" class="px-8 py-4 bg-black text-white dark:bg-white dark:text-black text-center font-bold rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors shadow-lg dark:shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                    Agendar Llamada Estratégica
-                </a>
+                    Diseñar mi Ecosistema
+                 </a>
             </div>
         </div>
     </section>
 
-    <!-- SECCIÓN DE HERRAMIENTAS VIP -->
     <section id="recursos" class="py-16 px-6 relative z-10 bg-[#f5f5f5] dark:bg-black border-t border-b border-black/5 dark:border-white/5 transition-colors duration-500">
         <div class="max-w-6xl mx-auto">
             <div class="mb-10 text-left md:text-center px-2">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black dark:text-white transition-colors">Herramientas Interactivas VIP</h2>
-                <p class="text-gray-600 dark:text-gray-400 font-light max-w-2xl md:mx-auto transition-colors">Recursos y sistemas desarrollados para optimizar la captación de tu negocio. Toca cualquier tarjeta para expandir la información.</p>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-black dark:text-white transition-colors">Herramientas para Expertos</h2>
+                <p class="text-gray-600 dark:text-gray-400 font-light max-w-2xl md:mx-auto transition-colors">Recursos tácticos para dejar de ser un commodity y tomar el control de tus cierres. Toca para ver cómo funciona.</p>
             </div>
 
             <div class="flex items-start gap-4 md:gap-6 overflow-x-auto pb-12 pt-4 no-scrollbar px-2 snap-x" id="lead-magnets-container">
-                
                 <div class="lm-card snap-center flex-shrink-0 w-[280px] md:w-[320px] relative group overflow-hidden rounded-[2rem] border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] backdrop-blur-md transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 hover:border-black/20 dark:hover:border-white/20 flex flex-col shadow-lg">
                     <div class="absolute inset-0 bg-gradient-to-br from-black/5 dark:from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
                     <div class="p-6 h-full flex flex-col relative z-10 w-full flex-grow">
@@ -435,23 +261,20 @@
                             <div class="p-3 bg-gray-100 dark:bg-black rounded-xl border border-black/5 dark:border-white/5 text-gray-500 group-hover:text-black dark:group-hover:text-white transition-colors">
                                 <i data-lucide="bot" class="w-6 h-6"></i>
                             </div>
-                            <span class="text-[10px] font-bold text-gray-400 dark:text-slate-600 uppercase tracking-widest">04/20</span>
+                            <span class="text-[10px] font-bold text-gray-400 dark:text-slate-600 uppercase tracking-widest">PRO</span>
                         </div>
-                        <h3 class="font-bold text-black dark:text-white text-lg transition-colors group-hover:text-gray-600 dark:group-hover:text-gray-300">Chatbot Calificador TikTok</h3>
-                        
+                        <h3 class="font-bold text-black dark:text-white text-lg transition-colors group-hover:text-gray-600 dark:group-hover:text-gray-300">Asistente de Triaje</h3>
                         <div class="lm-expandable max-h-0 opacity-0 overflow-hidden">
-                            <p class="text-gray-600 dark:text-slate-400 text-sm leading-relaxed mb-6 mt-4">Pre-califica leads de alto valor en automático antes de que lleguen a tu WhatsApp, ahorrando horas de tiempo.</p>
-                            <!-- ENLACE TIKTOK ACTUALIZADO -->
+                            <p class="text-gray-600 dark:text-slate-400 text-sm leading-relaxed mb-6 mt-4">Filtra automáticamente a los curiosos y solo recibe en WhatsApp a los prospectos con intención real y capacidad de pago.</p>
                             <a href="https://vendeentiktok.robertofibonacci.com.mx/" target="_blank" class="lm-cta w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black shadow-lg dark:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-gray-800 dark:hover:bg-slate-200 transition-all">
-                                Acceder ahora <i data-lucide="external-link" class="w-3 h-3"></i>
+                                Ver sistema <i data-lucide="external-link" class="w-3 h-3"></i>
                             </a>
                         </div>
-
                         <div class="w-full h-[1px] bg-black/10 dark:bg-white/5 my-4 mt-auto"></div>
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
                                 <div class="w-2 h-2 rounded-full animate-pulse-live bg-black/80 dark:bg-white/80"></div>
-                                <span class="text-[10px] text-gray-500 dark:text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> en evaluación</span>
+                                <span class="text-[10px] text-gray-500 dark:text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> activos</span>
                             </div>
                             <i data-lucide="arrow-up-right" class="lm-arrow w-5 h-5 text-black/20 dark:text-white/20 transition-transform duration-500"></i>
                         </div>
@@ -465,23 +288,20 @@
                             <div class="p-3 bg-gray-100 dark:bg-black rounded-xl border border-black/5 dark:border-white/5 text-gray-500 group-hover:text-black dark:group-hover:text-white transition-colors">
                                 <i data-lucide="zap" class="w-6 h-6"></i>
                             </div>
-                            <span class="text-[10px] font-bold text-gray-400 dark:text-slate-600 uppercase tracking-widest">04/18</span>
+                            <span class="text-[10px] font-bold text-gray-400 dark:text-slate-600 uppercase tracking-widest">SISTEMA</span>
                         </div>
-                        <h3 class="font-bold text-black dark:text-white text-lg transition-colors group-hover:text-gray-600 dark:group-hover:text-gray-300">Vende Más en Whatsapp</h3>
-                        
+                        <h3 class="font-bold text-black dark:text-white text-lg transition-colors group-hover:text-gray-600 dark:group-hover:text-gray-300">Guion de Venta Directa</h3>
                         <div class="lm-expandable max-h-0 opacity-0 overflow-hidden">
-                            <p class="text-gray-600 dark:text-slate-400 text-sm leading-relaxed mb-6 mt-4">Sistema probado para duplicar tu tasa de cierre en chats sin tener que parecer un vendedor desesperado.</p>
-                            <!-- ENLACE WHATSAPP/FUGAS ACTUALIZADO -->
+                            <p class="text-gray-600 dark:text-slate-400 text-sm leading-relaxed mb-6 mt-4">Estructura conversacional para cerrar servicios de alto valor sin parecer desesperado ni vendedor fastidioso.</p>
                             <a href="https://fugasenventas.robertofibonacci.com.mx/" target="_blank" class="lm-cta w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black shadow-lg dark:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-gray-800 dark:hover:bg-slate-200 transition-all">
-                                Acceder ahora <i data-lucide="external-link" class="w-3 h-3"></i>
+                                Acceder <i data-lucide="external-link" class="w-3 h-3"></i>
                             </a>
                         </div>
-
                         <div class="w-full h-[1px] bg-black/10 dark:bg-white/5 my-4 mt-auto"></div>
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
                                 <div class="w-2 h-2 rounded-full animate-pulse-live bg-black/80 dark:bg-white/80"></div>
-                                <span class="text-[10px] text-gray-500 dark:text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> en evaluación</span>
+                                <span class="text-[10px] text-gray-500 dark:text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> activos</span>
                             </div>
                             <i data-lucide="arrow-up-right" class="lm-arrow w-5 h-5 text-black/20 dark:text-white/20 transition-transform duration-500"></i>
                         </div>
@@ -495,167 +315,87 @@
                             <div class="p-3 bg-gray-100 dark:bg-black rounded-xl border border-black/5 dark:border-white/5 text-gray-500 group-hover:text-black dark:group-hover:text-white transition-colors">
                                 <i data-lucide="calculator" class="w-6 h-6"></i>
                             </div>
-                            <span class="text-[10px] font-bold text-gray-400 dark:text-slate-600 uppercase tracking-widest">04/16</span>
+                            <span class="text-[10px] font-bold text-gray-400 dark:text-slate-600 uppercase tracking-widest">DATA</span>
                         </div>
-                        <h3 class="font-bold text-black dark:text-white text-lg transition-colors group-hover:text-gray-600 dark:group-hover:text-gray-300">Calculadora de Fugas</h3>
-                        
+                        <h3 class="font-bold text-black dark:text-white text-lg transition-colors group-hover:text-gray-600 dark:group-hover:text-gray-300">Diagnóstico de Fugas</h3>
                         <div class="lm-expandable max-h-0 opacity-0 overflow-hidden">
-                            <p class="text-gray-600 dark:text-slate-400 text-sm leading-relaxed mb-6 mt-4">Diagnóstico financiero interactivo de alto nivel para descubrir cuánto dinero pierdes al mes por falta de seguimiento.</p>
-                            <!-- ENLACE WHATSAPP/FUGAS ACTUALIZADO -->
+                            <p class="text-gray-600 dark:text-slate-400 text-sm leading-relaxed mb-6 mt-4">Calcula cuánto dinero estás perdiendo al mes por no tener un proceso de seguimiento claro.</p>
                             <a href="https://fugasenventas.robertofibonacci.com.mx/" target="_blank" class="lm-cta w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black shadow-lg dark:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-gray-800 dark:hover:bg-slate-200 transition-all">
-                                Acceder ahora <i data-lucide="external-link" class="w-3 h-3"></i>
+                                Calcular <i data-lucide="external-link" class="w-3 h-3"></i>
                             </a>
                         </div>
-
                         <div class="w-full h-[1px] bg-black/10 dark:bg-white/5 my-4 mt-auto"></div>
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
                                 <div class="w-2 h-2 rounded-full animate-pulse-live bg-black/80 dark:bg-white/80"></div>
-                                <span class="text-[10px] text-gray-500 dark:text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> en evaluación</span>
+                                <span class="text-[10px] text-gray-500 dark:text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> activos</span>
                             </div>
                             <i data-lucide="arrow-up-right" class="lm-arrow w-5 h-5 text-black/20 dark:text-white/20 transition-transform duration-500"></i>
                         </div>
                     </div>
                 </div>
-
-                <div class="lm-card snap-center flex-shrink-0 w-[280px] md:w-[320px] relative group overflow-hidden rounded-[2rem] border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] backdrop-blur-md transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 hover:border-black/20 dark:hover:border-white/20 flex flex-col shadow-lg">
-                    <div class="absolute inset-0 bg-gradient-to-br from-black/5 dark:from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-                    <div class="p-6 h-full flex flex-col relative z-10 w-full flex-grow">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 bg-gray-100 dark:bg-black rounded-xl border border-black/5 dark:border-white/5 text-gray-500 group-hover:text-black dark:group-hover:text-white transition-colors">
-                                <i data-lucide="file-text" class="w-6 h-6"></i>
-                            </div>
-                            <span class="text-[10px] font-bold text-gray-400 dark:text-slate-600 uppercase tracking-widest">04/15</span>
-                        </div>
-                        <h3 class="font-bold text-black dark:text-white text-lg transition-colors group-hover:text-gray-600 dark:group-hover:text-gray-300">Script High Ticket</h3>
-                        
-                        <div class="lm-expandable max-h-0 opacity-0 overflow-hidden">
-                            <p class="text-gray-600 dark:text-slate-400 text-sm leading-relaxed mb-6 mt-4">Plantilla copy-paste de $3k. Estructura exacta de palabras para cerrar servicios de alto valor por mensaje.</p>
-                            <a href="#" target="_blank" class="lm-cta w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black shadow-lg dark:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-gray-800 dark:hover:bg-slate-200 transition-all">
-                                Acceder ahora <i data-lucide="external-link" class="w-3 h-3"></i>
-                            </a>
-                        </div>
-
-                        <div class="w-full h-[1px] bg-black/10 dark:bg-white/5 my-4 mt-auto"></div>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <div class="w-2 h-2 rounded-full animate-pulse-live bg-black/80 dark:bg-white/80"></div>
-                                <span class="text-[10px] text-gray-500 dark:text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> en evaluación</span>
-                            </div>
-                            <i data-lucide="arrow-up-right" class="lm-arrow w-5 h-5 text-black/20 dark:text-white/20 transition-transform duration-500"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lm-card snap-center flex-shrink-0 w-[280px] md:w-[320px] relative group overflow-hidden rounded-[2rem] border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] backdrop-blur-md transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 hover:border-black/20 dark:hover:border-white/20 flex flex-col shadow-lg">
-                    <div class="absolute inset-0 bg-gradient-to-br from-black/5 dark:from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-                    <div class="p-6 h-full flex flex-col relative z-10 w-full flex-grow">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 bg-gray-100 dark:bg-black rounded-xl border border-black/5 dark:border-white/5 text-gray-500 group-hover:text-black dark:group-hover:text-white transition-colors">
-                                <i data-lucide="clapperboard" class="w-6 h-6"></i>
-                            </div>
-                            <span class="text-[10px] font-bold text-gray-400 dark:text-slate-600 uppercase tracking-widest">04/14</span>
-                        </div>
-                        <h3 class="font-bold text-black dark:text-white text-lg transition-colors group-hover:text-gray-600 dark:group-hover:text-gray-300">Masterclass $10k/mes</h3>
-                        
-                        <div class="lm-expandable max-h-0 opacity-0 overflow-hidden">
-                            <p class="text-gray-600 dark:text-slate-400 text-sm leading-relaxed mb-6 mt-4">Entrenamiento VIP en video: Reposicionamiento de tu promesa central para atraer a tu cliente ideal que sí paga.</p>
-                            <a href="#" target="_blank" class="lm-cta w-full py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black shadow-lg dark:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-gray-800 dark:hover:bg-slate-200 transition-all">
-                                Acceder ahora <i data-lucide="external-link" class="w-3 h-3"></i>
-                            </a>
-                        </div>
-
-                        <div class="w-full h-[1px] bg-black/10 dark:bg-white/5 my-4 mt-auto"></div>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <div class="w-2 h-2 rounded-full animate-pulse-live bg-black/80 dark:bg-white/80"></div>
-                                <span class="text-[10px] text-gray-500 dark:text-slate-500 font-medium tracking-tight italic"><span class="count-val">0</span> en evaluación</span>
-                            </div>
-                            <i data-lucide="arrow-up-right" class="lm-arrow w-5 h-5 text-black/20 dark:text-white/20 transition-transform duration-500"></i>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
     </section>
 
-    <!-- Casos de Éxito -->
     <section id="proyectos" class="py-24 px-6 relative z-10 bg-white dark:bg-transparent transition-colors">
         <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl md:text-4xl font-bold mb-16 text-center text-black dark:text-white transition-colors">Casos de Éxito</h2>
-            
+            <h2 class="text-3xl md:text-4xl font-bold mb-16 text-center text-black dark:text-white transition-colors">La Transformación de mis Clientes</h2>
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="glass-panel rounded-2xl overflow-hidden group bg-white dark:bg-black border-black/10 dark:border-white/5 shadow-lg">
-                    <div class="h-48 bg-gray-100 dark:bg-black relative border-b border-black/10 dark:border-white/5">
-                        <div class="absolute inset-0 bg-gradient-to-t from-white dark:from-black to-transparent z-10 transition-colors"></div>
-                        <div class="absolute inset-0 flex items-center justify-center text-gray-400 dark:text-gray-600 transition-colors">
-                            <i data-lucide="building-2" class="w-12 h-12"></i>
-                        </div>
+                    <div class="h-48 bg-gray-100 dark:bg-black relative border-b border-black/10 dark:border-white/5 flex items-center justify-center">
+                        <i data-lucide="building-2" class="w-12 h-12 text-gray-300"></i>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2 text-black dark:text-white transition-colors">Agencia de Marketing</h3>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed transition-colors">Pasaron de 2 a 10 cierres mensuales automatizando su proceso de agendamiento y filtrando clientes sin presupuesto inicial.</p>
+                        <h3 class="text-xl font-semibold mb-2 text-black dark:text-white">Marketing Agency</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">De 2 a 10 cierres mensuales. Automatizamos el triaje y eliminamos a los curiosos sin presupuesto.</p>
                     </div>
                 </div>
-
                 <div class="glass-panel rounded-2xl overflow-hidden group bg-white dark:bg-black border-black/10 dark:border-white/5 shadow-lg">
-                    <div class="h-48 bg-gray-100 dark:bg-black relative border-b border-black/10 dark:border-white/5">
-                        <div class="absolute inset-0 bg-gradient-to-t from-white dark:from-black to-transparent z-10 transition-colors"></div>
-                        <div class="absolute inset-0 flex items-center justify-center text-gray-400 dark:text-gray-600 transition-colors">
-                            <i data-lucide="users" class="w-12 h-12"></i>
-                        </div>
+                    <div class="h-48 bg-gray-100 dark:bg-black relative border-b border-black/10 dark:border-white/5 flex items-center justify-center">
+                        <i data-lucide="users" class="w-12 h-12 text-gray-300"></i>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2 text-black dark:text-white transition-colors">Consultoría Legal</h3>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed transition-colors">Reducción del 75% en tiempo perdido en WhatsApp, implementando un embudo que pre-vende el servicio antes de la llamada.</p>
+                        <h3 class="text-xl font-semibold mb-2 text-black dark:text-white">Legal Consults</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">75% menos tiempo en WhatsApp. El embudo pre-vende su autoridad antes de la llamada de venta.</p>
                     </div>
                 </div>
-
                 <div class="glass-panel rounded-2xl overflow-hidden group bg-white dark:bg-black border-black/10 dark:border-white/5 shadow-lg">
-                    <div class="h-48 bg-gray-100 dark:bg-black relative border-b border-black/10 dark:border-white/5">
-                        <div class="absolute inset-0 bg-gradient-to-t from-white dark:from-black to-transparent z-10 transition-colors"></div>
-                        <div class="absolute inset-0 flex items-center justify-center text-gray-400 dark:text-gray-600 transition-colors">
-                            <i data-lucide="laptop" class="w-12 h-12"></i>
-                        </div>
+                    <div class="h-48 bg-gray-100 dark:bg-black relative border-b border-black/10 dark:border-white/5 flex items-center justify-center">
+                        <i data-lucide="laptop" class="w-12 h-12 text-gray-300"></i>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2 text-black dark:text-white transition-colors">Coach Financiero</h3>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed transition-colors">Logró escalar sus mentorías de $500 a $2,000 USD al mejorar la percepción de valor de su oferta mediante automatización.</p>
+                        <h3 class="text-xl font-semibold mb-2 text-black dark:text-white">Coach Financiero</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">Escaló mentorías de $500 a $2,000 USD mediante el ajuste de su promesa central.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Sección Contacto -->
     <section id="contacto" class="py-24 px-6 relative z-10 bg-[#f5f5f5] dark:bg-black border-t border-black/5 dark:border-white/5 transition-colors">
         <div class="max-w-3xl mx-auto text-center glass-panel p-12 rounded-3xl bg-white dark:bg-black border-black/10 dark:border-white/5 shadow-xl">
             <i data-lucide="calendar" class="w-12 h-12 mx-auto mb-6 text-black dark:text-white transition-colors"></i>
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-black dark:text-white transition-colors">¿Listo para dejar de improvisar?</h2>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-black dark:text-white transition-colors">¿Tu conocimiento merece cobrar más?</h2>
             <p class="text-gray-600 dark:text-gray-400 font-light mb-10 max-w-lg mx-auto transition-colors">
-                Si estás cansado de atraer clientes equivocados y perder ventas por falta de seguimiento, hablemos. Construyamos tu ecosistema.
+                Si estás listo para dejar de improvisar y construir un sistema que refleje tu verdadera autoridad, hablemos.
             </p>
             <a href="mailto:hola@robertofibonacci.com" class="inline-flex items-center gap-2 px-8 py-4 bg-black text-white dark:bg-white dark:text-black font-semibold rounded-full hover:scale-105 transition-transform duration-300 shadow-xl dark:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                Agendar sesión estratégica
+                Diseñar mi estrategia
                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
         </div>
     </section>
 
     <footer class="py-8 text-center text-sm text-gray-500 dark:text-gray-600 border-t border-black/5 dark:border-white/5 relative z-10 bg-white dark:bg-black transition-colors">
-        <p>© 2026 Roberto Fibonacci. Todos los derechos reservados.</p>
+        <p>© 2026 Roberto Fibonacci. Arquitecto de Autoridad.</p>
     </footer>
 
-    <!-- Scripts -->
     <script>
         lucide.createIcons();
-
-        // 0. LÓGICA DE DÍA Y NOCHE (Theme Toggle)
         const themeToggleBtn = document.getElementById('theme-toggle');
         const iconSun = document.getElementById('icon-sun');
         const iconMoon = document.getElementById('icon-moon');
-
         function updateThemeIcons() {
             if (document.documentElement.classList.contains('dark')) {
                 iconSun.classList.remove('hidden');
@@ -665,7 +405,6 @@
                 iconSun.classList.add('hidden');
             }
         }
-
         themeToggleBtn.addEventListener('click', () => {
             document.documentElement.classList.toggle('dark');
             if (document.documentElement.classList.contains('dark')) {
@@ -675,19 +414,14 @@
             }
             updateThemeIcons();
         });
-        
         updateThemeIcons();
-
-        // 1. Lógica del Botón Desplegable (Pestaña Unida)
         const profileBtn = document.getElementById('profile-btn');
         const profilePanel = document.getElementById('profile-panel');
         const profileChevron = document.getElementById('profile-chevron');
         let isProfileExpanded = false;
-
         profileBtn.addEventListener('click', (e) => {
             e.stopPropagation(); 
             isProfileExpanded = !isProfileExpanded;
-            
             if(isProfileExpanded) {
                 profilePanel.style.maxHeight = '600px';
                 profilePanel.style.opacity = '1';
@@ -698,71 +432,35 @@
                 profileChevron.style.transform = 'rotate(0deg)';
             }
         });
-
-        // 2. Canvas Estrellas (Adaptable Día/Noche)
         const canvas = document.getElementById('star-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
         let stars = [];
-
-        function resize() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-            initStars();
-        }
-
+        function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; initStars(); }
         function initStars() {
             stars = [];
             const numStars = Math.floor((width * height) / 4500); 
             for (let i = 0; i < numStars; i++) {
-                stars.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    radius: Math.random() * 1.2 + 0.3, 
-                    opacity: Math.random(), 
-                    speed: Math.random() * 0.003 + 0.001, 
-                    direction: Math.random() > 0.5 ? 1 : -1 
-                });
+                stars.push({ x: Math.random() * width, y: Math.random() * height, radius: Math.random() * 1.2 + 0.3, opacity: Math.random(), speed: Math.random() * 0.003 + 0.001, direction: Math.random() > 0.5 ? 1 : -1 });
             }
         }
-
         function animateStars() {
             ctx.clearRect(0, 0, width, height);
-            
             const isDark = document.documentElement.classList.contains('dark');
-            
             stars.forEach(star => {
                 star.opacity += star.speed * star.direction;
-                if (star.opacity >= 1) {
-                    star.opacity = 1;
-                    star.direction = -1;
-                } else if (star.opacity <= 0.1) {
-                    star.opacity = 0.1;
-                    star.direction = 1;
-                }
+                if (star.opacity >= 1) { star.opacity = 1; star.direction = -1; } else if (star.opacity <= 0.1) { star.opacity = 0.1; star.direction = 1; }
                 ctx.beginPath();
                 ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                
-                if (isDark) {
-                    ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-                } else {
-                    ctx.fillStyle = `rgba(0, 0, 0, ${star.opacity})`;
-                }
-                
+                if (isDark) { ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`; } else { ctx.fillStyle = `rgba(0, 0, 0, ${star.opacity})`; }
                 ctx.fill();
             });
             requestAnimationFrame(animateStars);
         }
-
         window.addEventListener('resize', resize);
         resize(); 
         animateStars(); 
-
-        // 3. Lógica Mapa Estratégico (Zig-Zag Adaptable)
         let isProcessRunning = false;
-        
         function drawLine(id, dimension, targetValue, duration) {
             const line = document.getElementById(id);
             if(!line) return;
@@ -770,131 +468,88 @@
             if(dimension === 'width') line.style.width = targetValue;
             if(dimension === 'height') line.style.height = targetValue;
         }
-
         function activateStep(stepId, isFinal) {
             const el = document.getElementById(stepId);
             if(!el) return;
             const iconBg = el.querySelector('.icon-bg');
             const stepText = el.querySelector('.step-text');
             const popUp = el.querySelector('.pop-up');
-
-            if (iconBg) {
-                iconBg.classList.add('node-active');
-            }
-            if (stepText) { 
-                stepText.classList.add('node-active-text'); 
-            }
+            if (iconBg) { iconBg.classList.add('node-active'); }
+            if (stepText) { stepText.classList.add('node-active-text'); }
             if (popUp) {
                 popUp.classList.remove('opacity-0', 'scale-50');
                 popUp.classList.add('opacity-100', 'scale-100', 'animate-bounce');
                 setTimeout(() => popUp.classList.remove('animate-bounce'), 2000);
             }
         }
-
         function runProcess() {
             if(isProcessRunning) return;
             isProcessRunning = true;
-            
             const popStart = document.getElementById('pop-start');
             if(popStart) popStart.style.display = 'none';
-
             const timeL1 = 1136, timeL2 = 795, timeL3 = 1136, timeL4 = 795, timeL5 = 1136; 
-
             activateStep('step-1', false);
             drawLine('line-1', 'width', '50%', timeL1);
-
             setTimeout(() => { activateStep('step-2', false); drawLine('line-2', 'height', '35%', timeL2); }, timeL1);
             setTimeout(() => { activateStep('step-3', false); drawLine('line-3', 'width', '50%', timeL3); }, timeL1 + timeL2);
             setTimeout(() => { activateStep('step-4', false); drawLine('line-4', 'height', '35%', timeL4); }, timeL1 + timeL2 + timeL3);
             setTimeout(() => { activateStep('step-5', false); drawLine('line-5', 'width', '50%', timeL5); }, timeL1 + timeL2 + timeL3 + timeL4);
             setTimeout(() => { activateStep('step-6', true); }, timeL1 + timeL2 + timeL3 + timeL4 + timeL5);
         }
-
-        // 4. LÓGICA DE LAS TARJETAS VIP (Horario B2B y Anti-Spam)
         function getB2BScheduleLimits() {
             const hour = new Date().getHours();
             let min = 0, max = 0;
-            
-            if (hour >= 0 && hour < 6) { min = 0; max = 1; }        
+            if (hour >= 0 && hour < 6) { min = 0; max = 1; }    
             else if (hour >= 6 && hour < 9) { min = 0; max = 2; }   
             else if (hour >= 9 && hour < 14) { min = 1; max = 5; }  
             else if (hour >= 14 && hour < 18) { min = 0; max = 3; } 
-            else { min = 0; max = 2; }                              
-            
+            else { min = 0; max = 2; }                                  
             return { minLimit: min, maxLimit: max };
         }
-
         const lmCards = document.querySelectorAll('.lm-card');
         const { minLimit, maxLimit } = getB2BScheduleLimits();
-        
         lmCards.forEach(card => {
             const expandable = card.querySelector('.lm-expandable');
             const arrow = card.querySelector('.lm-arrow');
             const counterSpan = card.querySelector('.count-val');
             const ctaBtn = card.querySelector('.lm-cta');
-            
             let currentCount = Math.floor(Math.random() * (maxLimit - minLimit + 1)) + minLimit;
             counterSpan.innerText = currentCount;
-            
             let sessionIncremented = false;
-
             card.addEventListener('click', () => {
                 const isAlreadyExpanded = card.classList.contains('is-expanded');
-
                 lmCards.forEach(otherCard => {
                     otherCard.classList.remove('is-expanded');
                     const otherExpandable = otherCard.querySelector('.lm-expandable');
                     const otherArrow = otherCard.querySelector('.lm-arrow');
-                    
                     otherExpandable.style.maxHeight = '0';
                     otherExpandable.style.opacity = '0';
                     otherArrow.style.transform = 'rotate(0deg)';
                     otherArrow.style.color = 'rgba(150,150,150,0.5)';
                 });
-
                 if (!isAlreadyExpanded) {
                     card.classList.add('is-expanded');
                     expandable.style.maxHeight = '400px';
                     expandable.style.opacity = '1';
                     arrow.style.transform = 'rotate(180deg)';
-                    
-                    if(document.documentElement.classList.contains('dark')) {
-                        arrow.style.color = '#ffffff';
-                    } else {
-                        arrow.style.color = '#000000';
-                    }
-                    
-                    if(!sessionIncremented) {
-                        currentCount++;
-                        counterSpan.innerText = currentCount;
-                        sessionIncremented = true; 
-                    }
+                    if(document.documentElement.classList.contains('dark')) { arrow.style.color = '#ffffff'; } else { arrow.style.color = '#000000'; }
+                    if(!sessionIncremented) { currentCount++; counterSpan.innerText = currentCount; sessionIncremented = true; }
                 }
             });
-
             ctaBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                if(!sessionIncremented) {
-                    currentCount++;
-                    counterSpan.innerText = currentCount;
-                    sessionIncremented = true;
-                }
+                if(!sessionIncremented) { currentCount++; counterSpan.innerText = currentCount; sessionIncremented = true; }
             });
-
             setInterval(() => {
                 const change = Math.random() > 0.6 ? 1 : -1;
                 let newCount = currentCount + change;
-                
                 const dynamicFloor = sessionIncremented ? Math.max(1, minLimit) : minLimit;
-                
                 if(newCount < dynamicFloor) newCount = dynamicFloor;
                 if(newCount > maxLimit) newCount = maxLimit;
-                
                 currentCount = newCount;
                 counterSpan.innerText = currentCount;
             }, 15000 + Math.random() * 5000); 
         });
-
     </script>
 </body>
 </html>
