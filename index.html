@@ -56,6 +56,12 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .lm-expandable { transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s ease; }
+        .lm-card-icon { transition: background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.7s cubic-bezier(0.4, 0, 0.2, 1), color 0.7s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.7s ease; }
+        html:not(.dark) .lm-card.is-expanded .lm-card-icon { background-color: rgba(78, 151, 255, 0.10) !important; border-color: rgba(78, 151, 255, 0.28) !important; color: #3f7fca !important; box-shadow: 0 0 18px rgba(78, 151, 255, 0.12); }
+        html.dark .lm-card.is-expanded .lm-card-icon { background-color: rgba(90, 163, 255, 0.12) !important; border-color: rgba(110, 178, 255, 0.30) !important; color: #8fc1ff !important; box-shadow: 0 0 20px rgba(78, 151, 255, 0.18); }
+        .footer-signature { transition: color 0.5s ease, text-shadow 0.5s ease; }
+        html:not(.dark) .footer-signature { color: #4f7fae; text-shadow: 0 0 12px rgba(78, 151, 255, 0.08); }
+        html.dark .footer-signature { color: #82b7f2; text-shadow: 0 0 14px rgba(78, 151, 255, 0.18); }
         @keyframes shield-glow-dark { 0% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); transform: scale(1); } 50% { filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1)); transform: scale(1.15); } 100% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); transform: scale(1); } }
         @keyframes shield-glow-light { 0% { filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); transform: scale(1); } 50% { filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.8)); transform: scale(1.15); } 100% { filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); transform: scale(1); } }
         html.dark .animate-shield { animation: shield-glow-dark 2.5s infinite ease-in-out; }
@@ -282,7 +288,7 @@
                 <div class="lm-card snap-center flex-shrink-0 w-[280px] md:w-[320px] relative group overflow-hidden rounded-[2rem] border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] backdrop-blur-md transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 hover:border-black/20 dark:hover:border-white/20 flex flex-col shadow-lg">
                     <div class="p-6 h-full flex flex-col relative z-10 w-full flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 bg-gray-100 dark:bg-black rounded-xl border border-black/5 dark:border-white/5 text-gray-500"><i data-lucide="bot" class="w-6 h-6"></i></div>
+                            <div class="lm-card-icon p-3 bg-gray-100 dark:bg-black rounded-xl border border-black/5 dark:border-white/5 text-gray-500"><i data-lucide="bot" class="w-6 h-6"></i></div>
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">DIAGNÓSTICO</span>
                         </div>
                         <h3 class="font-bold text-black dark:text-white text-lg">Diagnóstico Comercial</h3>
@@ -304,7 +310,7 @@
                 <div class="lm-card snap-center flex-shrink-0 w-[280px] md:w-[320px] relative group overflow-hidden rounded-[2rem] border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] backdrop-blur-md transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 hover:border-black/20 dark:hover:border-white/20 flex flex-col shadow-lg">
                     <div class="p-6 h-full flex flex-col relative z-10 w-full flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 bg-gray-100 dark:bg-black rounded-xl border border-black/5 dark:border-white/5 text-gray-500"><i data-lucide="zap" class="w-6 h-6"></i></div>
+                            <div class="lm-card-icon p-3 bg-gray-100 dark:bg-black rounded-xl border border-black/5 dark:border-white/5 text-gray-500"><i data-lucide="zap" class="w-6 h-6"></i></div>
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">CONVERSACIÓN</span>
                         </div>
                         <h3 class="font-bold text-black dark:text-white text-lg">Conversaciones de Venta</h3>
@@ -326,7 +332,7 @@
                 <div class="lm-card snap-center flex-shrink-0 w-[280px] md:w-[320px] relative group overflow-hidden rounded-[2rem] border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] backdrop-blur-md transition-all duration-700 ease-in-out cursor-pointer hover:-translate-y-1 hover:border-black/20 dark:hover:border-white/20 flex flex-col shadow-lg">
                     <div class="p-6 h-full flex flex-col relative z-10 w-full flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 bg-gray-100 dark:bg-black rounded-xl border border-black/5 dark:border-white/5 text-gray-500"><i data-lucide="calculator" class="w-6 h-6"></i></div>
+                            <div class="lm-card-icon p-3 bg-gray-100 dark:bg-black rounded-xl border border-black/5 dark:border-white/5 text-gray-500"><i data-lucide="calculator" class="w-6 h-6"></i></div>
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">SEGUIMIENTO</span>
                         </div>
                         <h3 class="font-bold text-black dark:text-white text-lg">Seguimiento Estratégico</h3>
@@ -360,7 +366,7 @@
     </section>
 
     <footer class="py-8 text-center text-sm text-gray-500 dark:text-gray-600 border-t border-black/5 dark:border-white/5 relative z-10 bg-white dark:bg-black transition-colors">
-        <p>© 2026 Roberto Fibonacci. Estratega Comercial · Método Prospecta.</p>
+        <p class="footer-signature">© 2026 Roberto Fibonacci. Estratega Comercial · Método Prospecta.</p>
     </footer>
 
     <script>
@@ -395,7 +401,7 @@
             e.stopPropagation(); 
             isProfileExpanded = !isProfileExpanded;
             if(isProfileExpanded) {
-                profilePanel.style.maxHeight = '600px';
+                profilePanel.style.maxHeight = profilePanel.scrollHeight + 'px';
                 profilePanel.style.opacity = '1';
                 profileChevron.style.transform = 'rotate(180deg)';
             } else {
