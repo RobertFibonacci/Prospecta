@@ -15,7 +15,6 @@
     <meta name="twitter:description" content="Descubre dónde se está rompiendo tu proceso comercial.">
     <meta name="twitter:image" content="social-preview.png">
     <!-- DATOS ESTRUCTURADOS: IDENTIDAD DEL SITIO -->
-    <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -26,6 +25,17 @@
       ],
       "url": "https://www.robertofibonacci.com.mx/"
     }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
