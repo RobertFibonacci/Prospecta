@@ -69,7 +69,14 @@
         document.documentElement.classList.add('dark');
     }
 </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <!-- FUENTES: conexión anticipada + carga no bloqueante -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;500;700;800&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
+    </noscript>
     <style>
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
         html:not(.dark) body { background-color: #f9f9f9; color: #000000; }
