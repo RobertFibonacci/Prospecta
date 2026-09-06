@@ -13,42 +13,55 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="¿Tienes herramientas pero no estás vendiendo? | Método Prospecta">
     <meta name="twitter:description" content="Descubre dónde se está rompiendo tu proceso comercial.">
-    <meta name="twitter:image" content="social-preview.png">
-    <!-- DATOS ESTRUCTURADOS: IDENTIDAD DEL SITIO -->
+    <meta name="twitter:image" content="social-preview.png"><!-- DATOS ESTRUCTURADOS: SITIO + IDENTIDAD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
     {
-      "@context": "https://schema.org",
       "@type": "WebSite",
+      "@id": "https://www.robertofibonacci.com.mx/#website",
+      "url": "https://www.robertofibonacci.com.mx/",
       "name": "Roberto Fibonacci",
       "alternateName": [
         "Método Prospecta",
         "robertofibonacci.com.mx"
       ],
-      "url": "https://www.robertofibonacci.com.mx/"
+      "publisher": {
+        "@id": "https://www.robertofibonacci.com.mx/#person"
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://www.robertofibonacci.com.mx/#person",
+      "name": "Roberto Fibonacci",
+      "url": "https://www.robertofibonacci.com.mx/",
+      "image": "https://www.robertofibonacci.com.mx/perfil.png",
+      "jobTitle": "Estratega Comercial",
+      "email": "mailto:hola@robertofibonacci.com.mx",
+      "sameAs": [
+        "https://www.instagram.com/rober_fibonacci/",
+        "https://tiktok.com/@roberfibonacci",
+        "https://www.youtube.com/@ProspectaMx",
+        "https://www.facebook.com/RobertoFibonacci"
+      ]
     }
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
-        if (localStorage.getItem('theme') === 'light') {
-            document.documentElement.classList.remove('dark');
-        } else {
-            document.documentElement.classList.add('dark');
-        }
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
-        if (localStorage.getItem('theme') === 'light') {
-            document.documentElement.classList.remove('dark');
-        } else {
-            document.documentElement.classList.add('dark');
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
+  ]
+}
+</script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        darkMode: 'class',
+    }
+
+    if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.remove('dark');
+    } else {
+        document.documentElement.classList.add('dark');
+    }
+</script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
