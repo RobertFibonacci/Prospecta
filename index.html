@@ -14,63 +14,249 @@
     <meta name="twitter:title" content="¿Tienes herramientas pero no estás vendiendo? | Método Prospecta">
     <meta name="twitter:description" content="Descubre dónde se está rompiendo tu proceso comercial.">
     <meta name="twitter:image" content="social-preview.png">
-    
+    <!-- DATOS ESTRUCTURADOS: IDENTIDAD DEL SITIO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Roberto Fibonacci",
+      "alternateName": [
+        "Método Prospecta",
+        "robertofibonacci.com.mx"
+      ],
+      "url": "https://www.robertofibonacci.com.mx/"
+    }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
         }
-        
         if (localStorage.getItem('theme') === 'light') {
             document.documentElement.classList.remove('dark');
         } else {
             document.documentElement.classList.add('dark');
         }
     </script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-
     <style>
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
         html:not(.dark) body { background-color: #f9f9f9; color: #000000; }
         html.dark body { background-color: #000000; color: #ffffff; }
         h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
-        #star-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-        .glass-panel { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.5s ease; }
-        html:not(.dark) .glass-panel { background: rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.05); }
-        html.dark .glass-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .fade-in { animation: fadeIn 1.5s ease-out forwards; opacity: 0; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .name-static-gradient { -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent; }
-        html.dark .name-static-gradient { background-image: linear-gradient(to right, #ffffff 0%, #ffffff 50%, #777777 100%); }
-        html:not(.dark) .name-static-gradient { background-image: linear-gradient(to right, #000000 0%, #000000 50%, #888888 100%); }
-        @keyframes pulse-border-white { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5); } 70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
-        @keyframes pulse-border-black { 0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5); } 70% { box-shadow: 0 0 0 15px rgba(0, 0, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); } }
-        .node-active { opacity: 1 !important; }
-        html:not(.dark) .node-active.icon-bg { background-color: #000000 !important; border-color: #000000 !important; color: #ffffff !important; animation: pulse-border-black 1.5s infinite; }
-        html.dark .node-active.icon-bg { background-color: #ffffff !important; border-color: #ffffff !important; color: #000000 !important; animation: pulse-border-white 1.5s infinite; }
-        html:not(.dark) .node-active-text { opacity: 1 !important; color: #000000 !important; }
-        html.dark .node-active-text { opacity: 1 !important; color: #ffffff !important; }
-        @keyframes pulse-live { 0% { transform: scale(0.9); opacity: 0.4; } 50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.3); } 100% { transform: scale(0.9); opacity: 0.4; } }
-        .animate-pulse-live { animation: pulse-live 2s infinite ease-in-out; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .lm-expandable { transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s ease; }
-        .lm-card-icon { transition: background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.7s cubic-bezier(0.4, 0, 0.2, 1), color 0.7s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.7s ease; }
-        html:not(.dark) .lm-card.is-expanded .lm-card-icon { background-color: rgba(78, 151, 255, 0.10) !important; border-color: rgba(78, 151, 255, 0.28) !important; color: #3f7fca !important; box-shadow: 0 0 18px rgba(78, 151, 255, 0.12); }
-        html.dark .lm-card.is-expanded .lm-card-icon { background-color: rgba(90, 163, 255, 0.12) !important; border-color: rgba(110, 178, 255, 0.30) !important; color: #8fc1ff !important; box-shadow: 0 0 20px rgba(78, 151, 255, 0.18); }
-        .footer-signature { transition: color 0.5s ease, text-shadow 0.5s ease; }
-        html:not(.dark) .footer-signature { color: #4f7fae; text-shadow: 0 0 12px rgba(78, 151, 255, 0.08); }
-        html.dark .footer-signature { color: #82b7f2; text-shadow: 0 0 14px rgba(78, 151, 255, 0.18); }
-        @keyframes shield-glow-dark { 0% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); transform: scale(1); } 50% { filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1)); transform: scale(1.15); } 100% { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); transform: scale(1); } }
-        @keyframes shield-glow-light { 0% { filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); transform: scale(1); } 50% { filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.8)); transform: scale(1.15); } 100% { filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); transform: scale(1); } }
-        html.dark .animate-shield { animation: shield-glow-dark 2.5s infinite ease-in-out; }
-        html:not(.dark) .animate-shield { animation: shield-glow-light 2.5s infinite ease-in-out; }
-        .profile-expandable { transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease; }
-        .card-stars-dark { background-image: radial-gradient(1.5px 1.5px at 15% 25%, rgba(255,255,255,0.9), transparent), radial-gradient(1px 1px at 85% 15%, rgba(255,255,255,0.6), transparent), radial-gradient(2px 2px at 75% 75%, rgba(255,255,255,0.8), transparent), radial-gradient(1px 1px at 20% 85%, rgba(255,255,255,0.5), transparent), radial-gradient(1.5px 1.5px at 50% 50%, rgba(255,255,255,0.7), transparent); animation: pulse-card-stars 3s infinite alternate ease-in-out; }
-        .card-stars-light { background-image: radial-gradient(1.5px 1.5px at 15% 25%, rgba(0,0,0,0.8), transparent), radial-gradient(1px 1px at 85% 15%, rgba(0,0,0,0.5), transparent), radial-gradient(2px 2px at 75% 75%, rgba(0,0,0,0.7), transparent), radial-gradient(1px 1px at 20% 85%, rgba(0,0,0,0.4), transparent), radial-gradient(1.5px 1.5px at 50% 50%, rgba(0,0,0,0.6), transparent); animation: pulse-card-stars 3s infinite alternate ease-in-out; }
-        @keyframes pulse-card-stars { 0% { opacity: 0.2; transform: scale(1); } 100% { opacity: 1; transform: scale(1.05); } }
+        #star-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.5s ease;
+        }
+        html:not(.dark) .glass-panel {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        html.dark .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .fade-in {
+            animation: fadeIn 1.5s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .name-static-gradient {
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+        html.dark .name-static-gradient {
+            background-image: linear-gradient(to right, #ffffff 0%, #ffffff 50%, #777777 100%);
+        }
+        html:not(.dark) .name-static-gradient {
+            background-image: linear-gradient(to right, #000000 0%, #000000 50%, #888888 100%);
+        }
+        @keyframes pulse-border-white {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+        @keyframes pulse-border-black {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(0, 0, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+            }
+        }
+        .node-active {
+            opacity: 1 !important;
+        }
+        html:not(.dark) .node-active.icon-bg {
+            background-color: #000000 !important;
+            border-color: #000000 !important;
+            color: #ffffff !important;
+            animation: pulse-border-black 1.5s infinite;
+        }
+        html.dark .node-active.icon-bg {
+            background-color: #ffffff !important;
+            border-color: #ffffff !important;
+            color: #000000 !important;
+            animation: pulse-border-white 1.5s infinite;
+        }
+        html:not(.dark) .node-active-text {
+            opacity: 1 !important;
+            color: #000000 !important;
+        }
+        html.dark .node-active-text {
+            opacity: 1 !important;
+            color: #ffffff !important;
+        }
+        @keyframes pulse-live {
+            0% {
+                transform: scale(0.9);
+                opacity: 0.4;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+                box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.3);
+            }
+            100% {
+                transform: scale(0.9);
+                opacity: 0.4;
+            }
+        }
+        .animate-pulse-live {
+            animation: pulse-live 2s infinite ease-in-out;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .lm-expandable {
+            transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s ease;
+        }
+        .lm-card-icon {
+            transition: background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.7s cubic-bezier(0.4, 0, 0.2, 1), color 0.7s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.7s ease;
+        }
+        html:not(.dark) .lm-card.is-expanded .lm-card-icon {
+            background-color: rgba(78, 151, 255, 0.10) !important;
+            border-color: rgba(78, 151, 255, 0.28) !important;
+            color: #3f7fca !important;
+            box-shadow: 0 0 18px rgba(78, 151, 255, 0.12);
+        }
+        html.dark .lm-card.is-expanded .lm-card-icon {
+            background-color: rgba(90, 163, 255, 0.12) !important;
+            border-color: rgba(110, 178, 255, 0.30) !important;
+            color: #8fc1ff !important;
+            box-shadow: 0 0 20px rgba(78, 151, 255, 0.18);
+        }
+        .footer-signature {
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+        html:not(.dark) .footer-signature {
+            color: #4f7fae;
+            text-shadow: 0 0 12px rgba(78, 151, 255, 0.08);
+        }
+        html.dark .footer-signature {
+            color: #82b7f2;
+            text-shadow: 0 0 14px rgba(78, 151, 255, 0.18);
+        }
+        @keyframes shield-glow-dark {
+            0% {
+                filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+                transform: scale(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1));
+                transform: scale(1.15);
+            }
+            100% {
+                filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+                transform: scale(1);
+            }
+        }
+        @keyframes shield-glow-light {
+            0% {
+                filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2));
+                transform: scale(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.8));
+                transform: scale(1.15);
+            }
+            100% {
+                filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2));
+                transform: scale(1);
+            }
+        }
+        html.dark .animate-shield {
+            animation: shield-glow-dark 2.5s infinite ease-in-out;
+        }
+        html:not(.dark) .animate-shield {
+            animation: shield-glow-light 2.5s infinite ease-in-out;
+        }
+        .profile-expandable {
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+        }
+        .card-stars-dark {
+            background-image:
+                radial-gradient(1.5px 1.5px at 15% 25%, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 85% 15%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 75% 75%, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 20% 85%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1.5px 1.5px at 50% 50%, rgba(255,255,255,0.7), transparent);
+            animation: pulse-card-stars 3s infinite alternate ease-in-out;
+        }
+        .card-stars-light {
+            background-image:
+                radial-gradient(1.5px 1.5px at 15% 25%, rgba(0,0,0,0.8), transparent),
+                radial-gradient(1px 1px at 85% 15%, rgba(0,0,0,0.5), transparent),
+                radial-gradient(2px 2px at 75% 75%, rgba(0,0,0,0.7), transparent),
+                radial-gradient(1px 1px at 20% 85%, rgba(0,0,0,0.4), transparent),
+                radial-gradient(1.5px 1.5px at 50% 50%, rgba(0,0,0,0.6), transparent);
+            animation: pulse-card-stars 3s infinite alternate ease-in-out;
+        }
+        @keyframes pulse-card-stars {
+            0% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
